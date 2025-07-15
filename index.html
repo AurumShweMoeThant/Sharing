@@ -9,19 +9,21 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #1f2937;
+            color: #e5e7eb;
         }
         .section-header {
-            background: linear-gradient(to right, #1e3a8a, #3b82f6);
+            background: linear-gradient(to right, #60a5fa, #a5b4fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         .model-card, .feature-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            background: linear-gradient(145deg, #ffffff, #f1f5f9);
+            background: linear-gradient(145deg, #374151, #4b5563);
         }
         .model-card:hover, .feature-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         }
         .fade-in {
             animation: fadeIn 1s ease-in-out;
@@ -30,43 +32,51 @@
             0% { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); }
         }
-        .nav-sticky {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+        .accordion-header {
+            cursor: pointer;
+            background: #4b5563;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            transition: background 0.3s;
+        }
+        .accordion-header:hover {
+            background: #6b7280;
+        }
+        .accordion-content {
+            display: none;
+            padding: 1rem;
+            background: #374151;
+            border-radius: 0 0 0.5rem 0.5rem;
+        }
+        .accordion-content.active {
+            display: block;
         }
         .model-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
         }
+        .header-bg {
+            background: linear-gradient(to right, #1e40af, #4f46e5);
+        }
+        .footer-bg {
+            background: linear-gradient(to right, #1e40af, #4f46e5);
+        }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    content.classList.toggle('active');
+                });
+            });
+        });
+    </script>
 </head>
-<body class="bg-gradient-to-b from-gray-50 to-gray-200 text-gray-800">
-    <!-- Navigation Bar -->
-    <nav class="nav-sticky shadow-lg py-4">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-blue-600">ML Models & Fraud Detection</h1>
-                <div class="space-x-4">
-                    <a href="#overview" class="text-blue-600 hover:text-blue-800 font-medium transition">Overview</a>
-                    <a href="#models" class="text-blue-600 hover:text-blue-800 font-medium transition">Models</a>
-                    <a href="#count" class="text-blue-600 hover:text-blue-800 font-medium transition">Count</a>
-                    <a href="#recommended" class="text-blue-600 hover:text-blue-800 font-medium transition">Recommended</a>
-                    <a href="#rationale" class="text-blue-600 hover:text-blue-800 font-medium transition">Rationale</a>
-                    <a href="#cleaning" class="text-blue-600 hover:text-blue-800 font-medium transition">Data Cleaning</a>
-                    <a href="#model-selection" class="text-blue-600 hover:text-blue-800 font-medium transition">Model Selection</a>
-                    <a href="#features" class="text-blue-600 hover:text-blue-800 font-medium transition">Features</a>
-                    <a href="#notes" class="text-blue-600 hover:text-blue-800 font-medium transition">Notes</a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
+<body>
     <!-- Header -->
-    <header class="bg-gradient-to-r from-blue-700 to-indigo-600 text-white py-16 text-center">
+    <header class="header-bg text-white py-16 text-center rounded-lg mb-12">
         <h1 class="text-5xl font-bold section-header">Machine Learning Models & Fraud Detection</h1>
         <p class="mt-4 text-xl max-w-3xl mx-auto">A comprehensive overview of machine learning models and data preparation strategies for credit card fraud detection, tailored for your assessment.</p>
     </header>
@@ -74,282 +84,327 @@
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <!-- Overview -->
-        <section id="overview" class="mb-16 fade-in">
+        <section class="mb-12 fade-in">
             <h2 class="text-4xl font-bold section-header mb-6">Overview</h2>
-            <p class="text-lg text-gray-700 bg-white p-6 rounded-lg shadow-md">
-                This page consolidates machine learning models mentioned across various lecture slides, providing a count of unique models and recommending 10 models for an assessment based on their prominence, diversity, and relevance. Additionally, it includes data cleaning recommendations, model selection, and feature selection strategies for a fraud detection task using the Kaggle Credit Card Transactions Fraud Detection dataset.
-            </p>
+            <div class="accordion-header">
+                <h3 class="text-xl font-semibold text-white">Overview Details</h3>
+            </div>
+            <div class="accordion-content">
+                <p class="text-lg text-gray-300">
+                    This page consolidates machine learning models mentioned across various lecture slides, providing a count of unique models and recommending 10 models for an assessment based on their prominence, diversity, and relevance. Additionally, it includes data cleaning recommendations, model selection, and feature selection strategies for a fraud detection task using the Kaggle Credit Card Transactions Fraud Detection dataset.
+                </p>
+            </div>
         </section>
 
         <!-- Unique Models -->
-        <section id="models" class="mb-16 fade-in">
+        <section class="mb-12 fade-in">
             <h2 class="text-4xl font-bold section-header mb-6">Unique Machine Learning Models</h2>
-            <p class="text-lg text-gray-700 mb-6 bg-white p-6 rounded-lg shadow-md">
-                Below is a consolidated list of 66 unique machine learning models extracted from the lecture slides, ensuring no duplicates by carefully reviewing names and contexts.
-            </p>
-            <div class="model-list">
-                <div class="bg-white p-4 rounded-lg shadow-md">K-Means Clustering</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Deep Learning Models</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Classification Algorithms</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Regression Algorithms</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Unsupervised Learning Algorithms</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Semi-Supervised Learning Algorithms</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Reinforcement Learning Algorithms</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Decision Trees</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Neural Networks (NNs)</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Support Vector Machines (SVM)</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Linear Regression</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Logistic Regression</div>
-                <div class="bg-white p- negativa4 rounded-lg shadow-md">Naive Bayes Classifiers</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">General and Generalized Linear Models</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Cox Regression</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Rule Set Models</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Restricted Boltzmann Machine</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Multiple Models (Ensemble)</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Matchbox Recommender Engine</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Reinforcement Learning</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Multiple Linear Regression</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Ridge Regression</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">LASSO Regression</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Support Vector Regression</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Random Forest Regression</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Random Forest Classifier</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Support Vector Classifier</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Memory-based Classifier (Lazy Learners)</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">ARIMA</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Facebook Prophet</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Convolutional Neural Network (CNN)</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Dense Neural Network (DNN)</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Recurrent Neural Network (RNN)</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Generative Adversarial Networks (GAN)</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Transformer Networks</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Feed Forward Neural Network (FFNN)</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Multilayer Perceptron</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Neural Language Model (NLM)</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Skip-gram Model</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Continuous Bag-of-Words (CBOW) Model</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">BERT</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">GPT-2</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">m3BERT</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">BART</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Multilingual Neural Machine Translation (M-NMT)</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Bi-RNN Models</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Attentional RNN</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">K-Nearest Neighbors (KNN)</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Random Forests</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">LinearSVM</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Bayes Classifier</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Least-Squares Linear Regression</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Multiple Least-Squares Linear Regression</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Elastic Net</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">K-Nearest Neighbors (K-NN) Classifier</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">K-Nearest Neighbors (K-NN) Regression</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Principal Components Regression (PCR)</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Partial Least Squares (PLS) Regression</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Bernoulli Naive Bayes</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Multinomial Naive Bayes</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Gaussian Naive Bayes</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Bagging</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Boosting</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Naive Bayes Classifier: Spam Filtering</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Decision Tree Regression</div>
-                <div class="bg-white p-4 rounded-lg shadow-md">Linear Discriminant Analysis (LDA)</div>
+            <div class="accordion-header">
+                <h3 class="text-xl font-semibold text-white">Model List (66 Models)</h3>
+            </div>
+            <div class="accordion-content">
+                <p class="text-lg text-gray-300 mb-6">
+                    Below is a consolidated list of 66 unique machine learning models extracted from the lecture slides, ensuring no duplicates by carefully reviewing names and contexts.
+                </p>
+                <div class="model-list">
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">K-Means Clustering</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Deep Learning Models</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Classification Algorithms</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Regression Algorithms</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Unsupervised Learning Algorithms</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Semi-Supervised Learning Algorithms</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Reinforcement Learning Algorithms</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Decision Trees</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Neural Networks (NNs)</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Support Vector Machines (SVM)</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Linear Regression</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Logistic Regression</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Naive Bayes Classifiers</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">General and Generalized Linear Models</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Cox Regression</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Rule Set Models</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Restricted Boltzmann Machine</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Multiple Models (Ensemble)</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Matchbox Recommender Engine</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Reinforcement Learning</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Multiple Linear Regression</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Ridge Regression</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">LASSO Regression</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Support Vector Regression</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Random Forest Regression</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Random Forest Classifier</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Support Vector Classifier</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Memory-based Classifier (Lazy Learners)</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">ARIMA</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Facebook Prophet</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Convolutional Neural Network (CNN)</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Dense Neural Network (DNN)</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Recurrent Neural Network (RNN)</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Generative Adversarial Networks (GAN)</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Transformer Networks</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Feed Forward Neural Network (FFNN)</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Multilayer Perceptron</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Neural Language Model (NLM)</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Skip-gram Model</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Continuous Bag-of-Words (CBOW) Model</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">BERT</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">GPT-2</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">m3BERT</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">BART</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Multilingual Neural Machine Translation (M-NMT)</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Bi-RNN Models</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Attentional RNN</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">K-Nearest Neighbors (KNN)</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Random Forests</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">LinearSVM</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Bayes Classifier</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Least-Squares Linear Regression</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Multiple Least-Squares Linear Regression</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Elastic Net</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">K-Nearest Neighbors (K-NN) Classifier</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">K-Nearest Neighbors (K-NN) Regression</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Principal Components Regression (PCR)</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Partial Least Squares (PLS) Regression</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Bernoulli Naive Bayes</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Multinomial Naive Bayes</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Gaussian Naive Bayes</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Bagging</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Boosting</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Naive Bayes Classifier: Spam Filtering</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Decision Tree Regression</div>
+                    <div class="model-card p-4 rounded-lg shadow-md text-white">Linear Discriminant Analysis (LDA)</div>
+                </div>
             </div>
         </section>
 
         <!-- Count of Models -->
-        <section id="count" class="mb-16 fade-in">
+        <section class="mb-12 fade-in">
             <h2 class="text-4xl font-bold section-header mb-6">Count of Unique Models</h2>
-            <p class="text-lg text-gray-700 bg-white p-6 rounded-lg shadow-md">
-                After reviewing the list, I’ve identified <strong class="text-blue-600">66 unique machine learning models</strong> across the lectures. General categories like “Classification Algorithms” or “Unsupervised Learning Algorithms” are included as distinct entries where they appear as such in the slides, but specific algorithms within these categories are also counted separately to ensure accuracy.
-            </p>
+            <div class="accordion-header">
+                <h3 class="text-xl font-semibold text-white">Count Details</h3>
+            </div>
+            <div class="accordion-content">
+                <p class="text-lg text-gray-300">
+                    After reviewing the list, I’ve identified <strong class="text-blue-400">66 unique machine learning models</strong> across the lectures. General categories like “Classification Algorithms” or “Unsupervised Learning Algorithms” are included as distinct entries where they appear as such in the slides, but specific algorithms within these categories are also counted separately to ensure accuracy.
+                </p>
+            </div>
         </section>
 
         <!-- Recommended Models -->
-        <section id="recommended" class="mb-16 fade-in">
+        <section class="mb-12 fade-in">
             <h2 class="text-4xl font-bold section-header mb-6">Recommended Models for Assessment</h2>
-            <p class="text-lg text-gray-700 mb-6 bg-white p-6 rounded-lg shadow-md">
-                For your assessment, selecting a diverse set of models covering various machine learning paradigms (e.g., supervised, unsupervised, neural networks, ensemble methods, probabilistic models, and specialized applications) will demonstrate a comprehensive understanding. Below are 10 recommended models based on their prominence, relevance, and variety across the lectures.
-            </p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">Linear Regression</h3>
-                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 2, 5, 6, 8, and 10. A fundamental supervised learning algorithm for regression tasks, widely used for predicting continuous outcomes.</p>
-                    <p class="mt-2"><strong>Why:</strong> Its simplicity and interpretability make it a strong candidate for discussing regression basics in an assessment.</p>
-                </div>
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">Logistic Regression</h3>
-                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 2, 3, 5, and 10. A key supervised learning algorithm for binary and multiclass classification tasks.</p>
-                    <p class="mt-2"><strong>Why:</strong> Its prevalence in classification tasks and mathematical foundation (e.g., maximum likelihood estimation) make it ideal for assessments.</p>
-                </div>
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">Decision Trees</h3>
-                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 2, 3, 5, 9, and 10. Used for both classification and regression, forming the basis for ensemble methods.</p>
-                    <p class="mt-2"><strong>Why:</strong> Their intuitive structure and versatility make them a great choice for explaining tree-based methods.</p>
-                </div>
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">Random Forests</h3>
-                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 3, 5, and 9, with variants like Random Forest Classifier and Random Forest Regression. An ensemble method combining multiple decision trees.</p>
-                    <p class="mt-2"><strong>Why:</strong> Represents advanced ensemble techniques, offering robustness and high performance, suitable for discussing bagging.</p>
-                </div>
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">K-Nearest Neighbors (KNN)</h3>
-                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 5, 6, 7, 8, and 9, with both classification and regression variants (K-NN Classifier, K-NN Regression).</p>
-                    <p class="mt-2"><strong>Why:</strong> A non-parametric, instance-based learning algorithm, ideal for contrasting with parametric models like Linear Regression.</p>
-                </div>
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">Naive Bayes Classifier</h3>
-                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 2, 3, 6, 7, 9, and 10, with specific variants (Bernoulli, Multinomial, Gaussian Naive Bayes) and applications like spam filtering.</p>
-                    <p class="mt-2"><strong>Why:</strong> Its probabilistic approach and simplicity make it a strong candidate for discussing classification and Bayes’ theorem.</p>
-                </div>
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">Support Vector Machine (SVM)</h3>
-                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 2, 3, and 5, with variants like Support Vector Classifier and Support Vector Regression.</p>
-                    <p class="mt-2"><strong>Why:</strong> Its use of kernel methods and margin maximization offers a sophisticated topic for discussing classification and regression.</p>
-                </div>
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">Recurrent Neural Network (RNN)</h3>
-                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 3, 4, and 5, with variants like Bi-RNN and Attentional RNN. Designed for sequential data like time series or text.</p>
-                    <p class="mt-2"><strong>Why:</strong> Represents advanced neural network architectures, showcasing deep learning applications in sequential tasks.</p>
-                </div>
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">Convolutional Neural Network (CNN)</h3>
-                    <p class="mt-2"><strong>Context:</strong> Appears in Lecture 3. Specialized for image and spatial data processing.</p>
-                    <p class="mt-2"><strong>Why:</strong> Its prominence in computer vision tasks makes it a compelling choice for discussing deep learning in specialized domains.</p>
-                </div>
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">Transformer Networks</h3>
-                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 3 and 4, with specific models like BERT, GPT-2, m3BERT, and BART. Central to modern natural language processing.</p>
-                    <p class="mt-2"><strong>Why:</strong> Their state-of-the-art performance in NLP tasks makes them ideal for discussing cutting-edge deep learning advancements.</p>
+            <div class="accordion-header">
+                <h3 class="text-xl font-semibold text-white">Recommended Models (10 Models)</h3>
+            </div>
+            <div class="accordion-content">
+                <p class="text-lg text-gray-300 mb-6">
+                    For your assessment, selecting a diverse set of models covering various machine learning paradigms (e.g., supervised, unsupervised, neural networks, ensemble methods, probabilistic models, and specialized applications) will demonstrate a comprehensive understanding. Below are 10 recommended models based on their prominence, relevance, and variety across the lectures.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">Linear Regression</h3>
+                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 2, 5, 6, 8, and 10. A fundamental supervised learning algorithm for regression tasks, widely used for predicting continuous outcomes.</p>
+                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Its simplicity and interpretability make it a strong candidate for discussing regression basics in an assessment.</p>
+                    </div>
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">Logistic Regression</h3>
+                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 2, 3, 5, and 10. A key supervised learning algorithm for binary and multiclass classification tasks.</p>
+                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Its prevalence in classification tasks and mathematical foundation (e.g., maximum likelihood estimation) make it ideal for assessments.</p>
+                    </div>
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">Decision Trees</h3>
+                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 2, 3, 5, 9, and 10. Used for both classification and regression, forming the basis for ensemble methods.</p>
+                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Their intuitive structure and versatility make them a great choice for explaining tree-based methods.</p>
+                    </div>
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">Random Forests</h3>
+                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 3, 5, and 9, with variants like Random Forest Classifier and Random Forest Regression. An ensemble method combining multiple decision trees.</p>
+                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Represents advanced ensemble techniques, offering robustness and high performance, suitable for discussing bagging.</p>
+                    </div>
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">K-Nearest Neighbors (KNN)</h3>
+                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 5, 6, 7, 8, and 9, with both classification and regression variants (K-NN Classifier, K-NN Regression).</p>
+                        <p class="mt-2 text-gray-300"><strong>Why:</strong> A non-parametric, instance-based learning algorithm, ideal for contrasting with parametric models like Linear Regression.</p>
+                    </div>
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">Naive Bayes Classifier</h3>
+                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 2, 3, 6, 7, 9, and 10, with specific variants (Bernoulli, Multinomial, Gaussian Naive Bayes) and applications like spam filtering.</p>
+                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Its probabilistic approach and simplicity make it a strong candidate for discussing classification and Bayes’ theorem.</p>
+                    </div>
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">Support Vector Machine (SVM)</h3>
+                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 2, 3, and 5, with variants like Support Vector Classifier and Support Vector Regression.</p>
+                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Its use of kernel methods and margin maximization offers a sophisticated topic for discussing classification and regression.</p>
+                    </div>
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">Recurrent Neural Network (RNN)</h3>
+                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 3, 4, and 5, with variants like Bi-RNN and Attentional RNN. Designed for sequential data like time series or text.</p>
+                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Represents advanced neural network architectures, showcasing deep learning applications in sequential tasks.</p>
+                    </div>
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">Convolutional Neural Network (CNN)</h3>
+                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lecture 3. Specialized for image and spatial data processing.</p>
+                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Its prominence in computer vision tasks makes it a compelling choice for discussing deep learning in specialized domains.</p>
+                    </div>
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">Transformer Networks</h3>
+                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 3 and 4, with specific models like BERT, GPT-2, m3BERT, and BART. Central to modern natural language processing.</p>
+                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Their state-of-the-art performance in NLP tasks makes them ideal for discussing cutting-edge deep learning advancements.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Rationale -->
-        <section id="rationale" class="mb-16 fade-in">
+        <section class="mb-12 fade-in">
             <h2 class="text-4xl font-bold section-header mb-6">Rationale for Selection</h2>
-            <ul class="list-disc pl-6 text-lg text-gray-700 bg-white p-6 rounded-lg shadow-md">
-                <li><strong>Diversity:</strong> The selection covers regression (Linear Regression, Logistic Regression), tree-based methods (Decision Trees, Random Forests), instance-based learning (KNN), probabilistic models (Naive Bayes), kernel-based methods (SVM), and deep learning (RNN, CNN, Transformer Networks), spanning supervised, unsupervised, and specialized paradigms.</li>
-                <li><strong>Prominence:</strong> These models are frequently mentioned across multiple lectures, indicating their importance in the course material.</li>
-                <li><strong>Relevance for Assessment:</strong> Each model offers rich discussion points (e.g., mathematical foundations, applications, strengths, and weaknesses) and is well-supported by lecture content, providing ample material for analysis.</li>
-                <li><strong>Balance:</strong> The list balances foundational models (e.g., Linear Regression, Naive Bayes) with advanced techniques (e.g., RNN, Transformer Networks), demonstrating both breadth and depth.</li>
-            </ul>
+            <div class="accordion-header">
+                <h3 class="text-xl font-semibold text-white">Selection Rationale</h3>
+            </div>
+            <div class="accordion-content">
+                <ul class="list-disc pl-6 text-lg text-gray-300">
+                    <li><strong>Diversity:</strong> The selection covers regression (Linear Regression, Logistic Regression), tree-based methods (Decision Trees, Random Forests), instance-based learning (KNN), probabilistic models (Naive Bayes), kernel-based methods (SVM), and deep learning (RNN, CNN, Transformer Networks), spanning supervised, unsupervised, and specialized paradigms.</li>
+                    <li><strong>Prominence:</strong> These models are frequently mentioned across multiple lectures, indicating their importance in the course material.</li>
+                    <li><strong>Relevance for Assessment:</strong> Each model offers rich discussion points (e.g., mathematical foundations, applications, strengths, and weaknesses) and is well-supported by lecture content, providing ample material for analysis.</li>
+                    <li><strong>Balance:</strong> The list balances foundational models (e.g., Linear Regression, Naive Bayes) with advanced techniques (e.g., RNN, Transformer Networks), demonstrating both breadth and depth.</li>
+                </ul>
+            </div>
         </section>
 
         <!-- Data Cleaning Recommendations -->
-        <section id="cleaning" class="mb-16 fade-in">
+        <section class="mb-12 fade-in">
             <h2 class="text-4xl font-bold section-header mb-6">Data Cleaning Recommendations</h2>
-            <p class="text-lg text-gray-700 mb-6 bg-white p-6 rounded-lg shadow-md">
-                To prepare the dataset for analysis in alignment with the research question, which focuses on geospatial discrepancies, temporal patterns, and demographic/transactional variables for fraud prediction, a systematic cleaning process is essential. This ensures data integrity, reduces noise, and facilitates effective feature engineering and modeling. The dataset, fraudTrain.csv from the Kaggle Credit Card Transactions Fraud Detection collection, contains approximately 1,296,675 rows and 23 columns based on available summaries. It is simulated, with no reported missing values, but exhibits severe class imbalance (approximately 99.42% non-fraudulent and 0.58% fraudulent transactions). Potential issues include duplicates, outliers in numerical fields (e.g., transaction amounts), and the need for type conversions and encoding. Below is a structured sequence of cleaning steps, which can be implemented using Python libraries such as Pandas and NumPy.
-            </p>
-            <ol class="list-decimal pl-6 text-lg text-gray-700 bg-white p-6 rounded-lg shadow-md">
-                <li><strong>Load the Dataset:</strong> Import the CSV file into a DataFrame. Verify the structure by inspecting the first few rows, data types, and summary statistics to confirm alignment with the provided column names.</li>
-                <li><strong>Handle Missing Values:</strong> Although summaries indicate no missing values in this simulated dataset, perform a check (e.g., using <code>df.isnull().sum()</code>) to confirm. If any are found unexpectedly, impute numerical fields with medians and categorical fields with modes, or remove affected rows if minimal.</li>
-                <li><strong>Remove Duplicates:</strong> Identify and eliminate duplicate rows based on all columns or key identifiers like <code>trans_num</code> (e.g., using <code>df.drop_duplicates()</code>). Duplicates, if present, could skew fraud patterns.</li>
-                <li><strong>Convert Data Types:</strong> Parse <code>trans_date_trans_time</code> to datetime format for temporal feature extractionស់ <code>dob</code> to datetime if not already. Ensure numerical columns (e.g., <code>amt</code>, <code>lat</code>, <code>long</code>) are floats or integers as appropriate.</li>
-                <li><strong>Address Outliers:</strong> Examine numerical columns such as <code>amt</code>, <code>city_pop</code>, and potential derived features (e.g., geospatial distances) for anomalies using box plots or z-scores. Cap extreme values at the 99th percentile or apply logarithmic transformations to mitigate their impact on model performance, particularly since fraud may correlate with unusual amounts.</li>
-                <li><strong>Encode Categorical Variables:</strong> Convert non-numerical columns (e.g., <code>merchant</code>, <code>category</code>, <code>gender</code>, <code>state</code>, <code>job</code>) to numerical formats. Use one-hot encoding for low-cardinality fields like <code>gender</code> and <code>category</code>, and label encoding or frequency encoding for high-cardinality ones like <code>merchant</code> and <code>job</code> to avoid dimensionality issues.</li>
-                <li><strong>Drop Irrelevant or Redundant Columns:</strong> Remove sensitive or low-utility fields such as <code>first</code>, <code>last</code>, <code>street</code>, <code>trans_num</code>, and <code>unix_time</code> (redundant with <code>trans_date_trans_time</code>) to reduce noise and protect privacy, unless needed for grouping (e.g., by <code>cc_num</code> for user-level analysis).</li>
-                <li><strong>Initial Feature Engineering for Cleaning:</strong> Calculate geospatial proximity (e.g., Haversine distance between (<code>lat</code>, <code>long</code>) and (<code>merch_lat</code>, <code>merch_long</code>)) and extract temporal features (e.g., hour, day of week from <code>trans_date_trans_time</code>). Flag any invalid distances (e.g., negative or implausible values) for removal.</li>
-                <li><strong>Check for Inconsistencies:</strong> Validate logical constraints, such as ensuring <code>merch_lat</code> and <code>merch_long</code> fall within realistic geographic ranges, and cross-check <code>zip</code> with <code>city</code> and <code>state</code> for mismatches if external validation is feasible.</li>
-                <li><strong>Save Cleaned Dataset:</strong> Export the processed DataFrame to a new CSV for reproducibility and further use in modeling.</li>
-            </ol>
-            <p class="text-lg text-gray-700 mt-4 bg-white p-6 rounded-lg shadow-md">
-                These steps should yield a clean, analysis-ready dataset while preserving key elements for the research question. Note that class imbalance will be addressed during modeling (e.g., via oversampling or class weights) rather than in cleaning to avoid data leakage.
-            </p>
+            <div class="accordion-header">
+                <h3 class="text-xl font-semibold text-white">Cleaning Steps</h3>
+            </div>
+            <div class="accordion-content">
+                <p class="text-lg text-gray-300 mb-6">
+                    To prepare the dataset for analysis in alignment with the research question, which focuses on geospatial discrepancies, temporal patterns, and demographic/transactional variables for fraud prediction, a systematic cleaning process is essential. This ensures data integrity, reduces noise, and facilitates effective feature engineering and modeling. The dataset, fraudTrain.csv from the Kaggle Credit Card Transactions Fraud Detection collection, contains approximately 1,296,675 rows and 23 columns based on available summaries. It is simulated, with no reported missing values, but exhibits severe class imbalance (approximately 99.42% non-fraudulent and 0.58% fraudulent transactions). Potential issues include duplicates, outliers in numerical fields (e.g., transaction amounts), and the need for type conversions and encoding. Below is a structured sequence of cleaning steps, which can be implemented using Python libraries such as Pandas and NumPy.
+                </p>
+                <ol class="list-decimal pl-6 text-lg text-gray-300">
+                    <li><strong>Load the Dataset:</strong> Import the CSV file into a DataFrame. Verify the structure by inspecting the first few rows, data types, and summary statistics to confirm alignment with the provided column names.</li>
+                    <li><strong>Handle Missing Values:</strong> Although summaries indicate no missing values in this simulated dataset, perform a check (e.g., using <code>df.isnull().sum()</code>) to confirm. If any are found unexpectedly, impute numerical fields with medians and categorical fields with modes, or remove affected rows if minimal.</li>
+                    <li><strong>Remove Duplicates:</strong> Identify and eliminate duplicate rows based on all columns or key identifiers like <code>trans_num</code> (e.g., using <code>df.drop_duplicates()</code>). Duplicates, if present, could skew fraud patterns.</li>
+                    <li><strong>Convert Data Types:</strong> Parse <code>trans_date_trans_time</code> to datetime format for temporal feature extraction. Convert <code>dob</code> to datetime if not already. Ensure numerical columns (e.g., <code>amt</code>, <code>lat</code>, <code>long</code>) are floats or integers as appropriate.</li>
+                    <li><strong>Address Outliers:</strong> Examine numerical columns such as <code>amt</code>, <code>city_pop</code>, and potential derived features (e.g., geospatial distances) for anomalies using box plots or z-scores. Cap extreme values at the 99th percentile or apply logarithmic transformations to mitigate their impact on model performance, particularly since fraud may correlate with unusual amounts.</li>
+                    <li><strong>Encode Categorical Variables:</strong> Convert non-numerical columns (e.g., <code>merchant</code>, <code>category</code>, <code>gender</code>, <code>state</code>, <code>job</code>) to numerical formats. Use one-hot encoding for low-cardinality fields like <code>gender</code> and <code>category</code>, and label encoding or frequency encoding for high-cardinality ones like <code>merchant</code> and <code>job</code> to avoid dimensionality issues.</li>
+                    <li><strong>Drop Irrelevant or Redundant Columns:</strong> Remove sensitive or low-utility fields such as <code>first</code>, <code>last</code>, <code>street</code>, <code>trans_num</code>, and <code>unix_time</code> (redundant with <code>trans_date_trans_time</code>) to reduce noise and protect privacy, unless needed for grouping (e.g., by <code>cc_num</code> for user-level analysis).</li>
+                    <li><strong>Initial Feature Engineering for Cleaning:</strong> Calculate geospatial proximity (e.g., Haversine distance between (<code>lat</code>, <code>long</code>) and (<code>merch_lat</code>, <code>merch_long</code>)) and extract temporal features (e.g., hour, day of week from <code>trans_date_trans_time</code>). Flag any invalid distances (e.g., negative or implausible values) for removal.</li>
+                    <li><strong>Check for Inconsistencies:</strong> Validate logical constraints, such as ensuring <code>merch_lat</code> and <code>merch_long</code> fall within realistic geographic ranges, and cross-check <code>zip</code> with <code>city</code> and <code>state</code> for mismatches if external validation is feasible.</li>
+                    <li><strong>Save Cleaned Dataset:</strong> Export the processed DataFrame to a new CSV for reproducibility and further use in modeling.</li>
+                </ol>
+                <p class="text-lg text-gray-300 mt-4">
+                    These steps should yield a clean, analysis-ready dataset while preserving key elements for the research question. Note that class imbalance will be addressed during modeling (e.g., via oversampling or class weights) rather than in cleaning to avoid data leakage.
+                </p>
+            </div>
         </section>
 
         <!-- Model Selection for Group Members -->
-        <section id="model-selection" class="mb-16 fade-in">
+        <section class="mb-12 fade-in">
             <h2 class="text-4xl font-bold section-header mb-6">Model Selection for Group Members</h2>
-            <p class="text-lg text-gray-700 mb-6 bg-white p-6 rounded-lg shadow-md">
-                Given the binary classification nature of the task (predicting <code>is_fraud</code>) and the top 10 machine learning models from your lectures, four suitable models have been selected for individual implementation by each group member. The choices prioritize models applicable to tabular data, effective for imbalanced classification, and aligned with the research question's predictive focus. Models like Linear Regression (suited for regression), RNN, CNN, and Transformer Networks (oriented toward sequential or image data) were excluded as they are less appropriate here. The selected models are:
-            </p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">Logistic Regression</h3>
-                    <p class="mt-2">A baseline probabilistic classifier ideal for interpreting feature importance (e.g., geospatial and temporal variables) and handling imbalance through class weights.</p>
-                </div>
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">Decision Trees</h3>
-                    <p class="mt-2">A non-parametric model that captures non-linear relationships and interactions, such as between transaction timing and location, with built-in feature selection.</p>
-                </div>
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">Random Forests</h3>
-                    <p class="mt-2">An ensemble method that improves on decision trees by reducing overfitting and enhancing accuracy on imbalanced data through bootstrapping and majority voting.</p>
-                </div>
-                <div class="model-card p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-bold text-blue-600">Support Vector Machine (SVM)</h3>
-                    <p class="mt-2">Effective for high-dimensional spaces and imbalance via kernel tricks and cost-sensitive learning, focusing on maximizing margins between fraud and non-fraud classes.</p>
-                </div>
+            <div class="accordion-header">
+                <h3 class="text-xl font-semibold text-white">Selected Models (4 Models)</h3>
             </div>
-            <p class="text-lg text-gray-700 mt-6 bg-white p-6 rounded-lg shadow-md">
-                Each member can train, tune hyperparameters (e.g., using grid search), and evaluate their model with metrics like precision-recall curves, F1-score, and AUC-ROC to assess predictive extent as per the research question. Compare results collectively to draw insights.
-            </p>
+            <div class="accordion-content">
+                <p class="text-lg text-gray-300 mb-6">
+                    Given the binary classification nature of the task (predicting <code>is_fraud</code>) and the top 10 machine learning models from your lectures, four suitable models have been selected for individual implementation by each group member. The choices prioritize models applicable to tabular data, effective for imbalanced classification, and aligned with the research question's predictive focus. Models like Linear Regression (suited for regression), RNN, CNN, and Transformer Networks (oriented toward sequential or image data) were excluded as they are less appropriate here. The selected models are:
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">Logistic Regression</h3>
+                        <p class="mt-2 text-gray-300">A baseline probabilistic classifier ideal for interpreting feature importance (e.g., geospatial and temporal variables) and handling imbalance through class weights.</p>
+                    </div>
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">Decision Trees</h3>
+                        <p class="mt-2 text-gray-300">A non-parametric model that captures non-linear relationships and interactions, such as between transaction timing and location, with built-in feature selection.</p>
+                    </div>
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">Random Forests</h3>
+                        <p class="mt-2 text-gray-300">An ensemble method that improves on decision trees by reducing overfitting and enhancing accuracy on imbalanced data through bootstrapping and majority voting.</p>
+                    </div>
+                    <div class="model-card p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-400">Support Vector Machine (SVM)</h3>
+                        <p class="mt-2 text-gray-300">Effective for high-dimensional spaces and imbalance via kernel tricks and cost-sensitive learning, focusing on maximizing margins between fraud and non-fraud classes.</p>
+                    </div>
+                </div>
+                <p class="text-lg text-gray-300 mt-6">
+                    Each member can train, tune hyperparameters (e.g., using grid search), and evaluate their model with metrics like precision-recall curves, F1-score, and AUC-ROC to assess predictive extent as per the research question. Compare results collectively to draw insights.
+                </p>
+            </div>
         </section>
 
         <!-- Feature Selection -->
-        <section id="features" class="mb-16 fade-in">
+        <section class="mb-12 fade-in">
             <h2 class="text-4xl font-bold section-header mb-6">Feature Selection for the Chosen Models and Research Question</h2>
-            <p class="text-lg text-gray-700 mb-6 bg-white p-6 rounded-lg shadow-md">
-                In alignment with the research question—"To what extent can discrepancies in geospatial proximity between cardholders and merchants, combined with temporal patterns in transaction timing, predict credit card fraud while accounting for demographic and transactional variables?"—feature selection should prioritize columns that directly contribute to geospatial, temporal, demographic, and transactional aspects while ensuring compatibility with the selected models: Logistic Regression, Decision Trees, Random Forests, and Support Vector Machine. These models perform well on tabular data and can handle a mix of numerical and categorical features, provided appropriate preprocessing (e.g., encoding, scaling) is applied.
-            </p>
-            <p class="text-lg text-gray-700 mb-6 bg-white p-6 rounded-lg shadow-md">
-                The target variable is <code>is_fraud</code>, a binary flag for classification. Features should be derived from the remaining columns to avoid redundancy, multicollinearity, and privacy concerns (e.g., excluding personally identifiable information). Irrelevant columns, such as unique identifiers (<code>index</code>, <code>trans_num</code>), should be dropped as they offer no predictive value. Similarly, <code>unix_time</code> is redundant with <code>trans_date_trans_time</code> and can be excluded. Sensitive fields like <code>first</code>, <code>last</code>, <code>street</code>, <code>city</code>, <code>state</code>, and <code>zip</code> should be omitted due to privacy risks and overlap with geospatial data (<code>lat</code>, <code>long</code>).
-            </p>
-            <h3 class="text-2xl font-semibold text-blue-600 mb-4">Recommended Features</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="feature-card p-6 rounded-lg shadow-md">
-                    <h4 class="text-lg font-bold text-blue-600">Geospatial Proximity Features</h4>
-                    <p class="mt-2">Retain <code>lat</code>, <code>long</code>, <code>merch_lat</code>, <code>merch_long</code> to compute distance metrics (e.g., Haversine formula for Euclidean distance between cardholder and merchant locations). This derived feature directly quantifies "geospatial proximity" and is crucial for all models, as it may reveal fraud patterns in distant transactions.</p>
-                </div>
-                <div class="feature-card p-6 rounded-lg shadow-md">
-                    <h4 class="text-lg font-bold text-blue-600">Temporal Patterns Features</h4>
-                    <p class="mt-2">Retain <code>trans_date_trans_time</code> to extract derived features like hour of day, day of week, month, or time since previous transaction (if grouped by <code>cc_num</code>). This supports identifying temporal anomalies, enhancing predictive power across models.</p>
-                </div>
-                <div class="feature-card p-6 rounded-lg shadow-md">
-                    <h4 class="text-lg font-bold text-blue-600">Demographic Variables</h4>
-                    <ul class="list-disc pl-4 mt-2">
-                        <li><code>gender</code>: Retain as a categorical feature (binary: M/F) for encoding; provides basic demographic context.</li>
-                        <li><code>city_pop</code>: Retain as numerical; population density could correlate with fraud rates.</li>
-                        <li><code>job</code>: Retain as categorical; encode via frequency or one-hot; occupations may link to spending behaviors.</li>
-                        <li><code>dob</code>: Retain to derive age; a key demographic proxy for risk profiling.</li>
-                    </ul>
-                </div>
-                <div class="feature-card p-6 rounded-lg shadow-md">
-                    <h4 class="text-lg font-bold text-blue-600">Transactional Variables</h4>
-                    <ul class="list-disc pl-4 mt-2">
-                        <li><code>amt</code>: Retain as numerical; unusual amounts are classic fraud indicators, log-transform for normalization.</li>
-                        <li><code>category</code>: Retain as categorical (14 unique); one-hot encode to highlight fraud-prone merchant types.</li>
-                        <li><code>merchant</code>: Retain cautiously; apply frequency encoding due to high cardinality (~700 unique).</li>
-                        <li><code>cc_num</code>: Retain for grouping (e.g., user-level aggregates like transaction count), not as a direct feature.</li>
-                    </ul>
-                </div>
+            <div class="accordion-header">
+                <h3 class="text-xl font-semibold text-white">Feature Selection Details</h3>
             </div>
-            <h3 class="text-2xl font-semibold text-blue-600 mt-6 mb-4">Excluded Columns</h3>
-            <p class="text-lg text-gray-700 bg-white p-6 rounded-lg shadow-md">
-                <strong>Excluded:</strong> <code>index</code>, <code>trans_num</code> (identifiers; no value); <code>first</code>, <code>last</code>, <code>street</code> (privacy risk); <code>city</code>, <code>state</code>, <code>zip</code> (redundant with <code>lat</code>/<code>long</code>); <code>unix_time</code> (duplicates <code>trans_date_trans_time</code>).
-            </p>
-            <h3 class="text-2xl font-semibold text-blue-600 mt-6 mb-4">Feature Engineering Recommendations</h3>
-            <p class="text-lg text-gray-700 bg-white p-6 rounded-lg shadow-md">
-                To align with the research question, derive: <strong>Geospatial:</strong> Distance (km) = Haversine(<code>lat</code>, <code>long</code>, <code>merch_lat</code>, <code>merch_long</code>). <strong>Temporal:</strong> Hour (0-23), Day of Week (0-6), Is Weekend (binary), Time Delta (hours since last transaction per <code>cc_num</code>). <strong>Demographic:</strong> Age = (transaction date - <code>dob</code>).days / 365. <strong>Transactional:</strong> Log(<code>amt</code>); user-level features like transaction count or average <code>amt</code> per <code>cc_num</code>. <strong>Interactions:</strong> Optionally, distance * <code>amt</code> or hour * category for Decision Trees/Random Forests.
-            </p>
-            <p class="text-lg text-gray-700 mt-4 bg-white p-6 rounded-lg shadow-md">
-                This results in ~15-20 features suitable for the models. Scale numerical features for Logistic Regression and SVM; tune hyperparameters for all models. Evaluate feature importance (e.g., coefficients, Gini impurity) to refine selections.
-            </p>
+            <div class="accordion-content">
+                <p class="text-lg text-gray-300 mb-6">
+                    In alignment with the research question—"To what extent can discrepancies in geospatial proximity between cardholders and merchants, combined with temporal patterns in transaction timing, predict credit card fraud while accounting for demographic and transactional variables?"—feature selection should prioritize columns that directly contribute to geospatial, temporal, demographic, and transactional aspects while ensuring compatibility with the selected models: Logistic Regression, Decision Trees, Random Forests, and Support Vector Machine. These models perform well on tabular data and can handle a mix of numerical and categorical features, provided appropriate preprocessing (e.g., encoding, scaling) is applied.
+                </p>
+                <p class="text-lg text-gray-300 mb-6">
+                    The target variable is <code>is_fraud</code>, a binary flag for classification. Features should be derived from the remaining columns to avoid redundancy, multicollinearity, and privacy concerns (e.g., excluding personally identifiable information). Irrelevant columns, such as unique identifiers (<code>index</code>, <code>trans_num</code>), should be dropped as they offer no predictive value. Similarly, <code>unix_time</code> is redundant with <code>trans_date_trans_time</code> and can be excluded. Sensitive fields like <code>first</code>, <code>last</code>, <code>street</code>, <code>city</code>, <code>state</code>, and <code>zip</code> should be omitted due to privacy risks and overlap with geospatial data (<code>lat</code>, <code>long</code>).
+                </p>
+                <h3 class="text-2xl font-semibold text-blue-400 mb-4">Recommended Features</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="feature-card p-6 rounded-lg shadow-md">
+                        <h4 class="text-lg font-bold text-blue-400">Geospatial Proximity Features</h4>
+                        <p class="mt-2 text-gray-300">Retain <code>lat</code>, <code>long</code>, <code>merch_lat</code>, <code>merch_long</code> to compute distance metrics (e.g., Haversine formula for Euclidean distance between cardholder and merchant locations). This derived feature directly quantifies "geospatial proximity" and is crucial for all models, as it may reveal fraud patterns in distant transactions.</p>
+                    </div>
+                    <div class="feature-card p-6 rounded-lg shadow-md">
+                        <h4 class="text-lg font-bold text-blue-400">Temporal Patterns Features</h4>
+                        <p class="mt-2 text-gray-300">Retain <code>trans_date_trans_time</code> to extract derived features like hour of day, day of week, month, or time since previous transaction (if grouped by <code>cc_num</code>). This supports identifying temporal anomalies, enhancing predictive power across models.</p>
+                    </div>
+                    <div class="feature-card p-6 rounded-lg shadow-md">
+                        <h4 class="text-lg font-bold text-blue-400">Demographic Variables</h4>
+                        <ul class="list-disc pl-4 mt-2 text-gray-300">
+                            <li><code>gender</code>: Retain as a categorical feature (binary: M/F) for encoding; provides basic demographic context.</li>
+                            <li><code>city_pop</code>: Retain as numerical; population density could correlate with fraud rates.</li>
+                            <li><code>job</code>: Retain as categorical; encode via frequency or one-hot; occupations may link to spending behaviors.</li>
+                            <li><code>dob</code>: Retain to derive age; a key demographic proxy for risk profiling.</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card p-6 rounded-lg shadow-md">
+                        <h4 class="text-lg font-bold text-blue-400">Transactional Variables</h4>
+                        <ul class="list-disc pl-4 mt-2 text-gray-300">
+                            <li><code>amt</code>: Retain as numerical; unusual amounts are classic fraud indicators, log-transform for normalization.</li>
+                            <li><code>category</code>: Retain as categorical (14 unique); one-hot encode to highlight fraud-prone merchant types.</li>
+                            <li><code>merchant</code>: Retain cautiously; apply frequency encoding due to high cardinality (~700 unique).</li>
+                            <li><code>cc_num</code>: Retain for grouping (e.g., user-level aggregates like transaction count), not as a direct feature.</li>
+                        </ul>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-semibold text-blue-400 mt-6 mb-4">Excluded Columns</h3>
+                <p class="text-lg text-gray-300">
+                    <strong>Excluded:</strong> <code>index</code>, <code>trans_num</code> (identifiers; no value); <code>first</code>, <code>last</code>, <code>street</code> (privacy risk); <code>city</code>, <code>state</code>, <code>zip</code> (redundant with <code>lat</code>/<code>long</code>); <code>unix_time</code> (duplicates <code>trans_date_trans_time</code>).
+                </p>
+                <h3 class="text-2xl font-semibold text-blue-400 mt-6 mb-4">Feature Engineering Recommendations</h3>
+                <p class="text-lg text-gray-300">
+                    To align with the research question, derive: <strong>Geospatial:</strong> Distance (km) = Haversine(<code>lat</code>, <code>long</code>, <code>merch_lat</code>, <code>merch_long</code>). <strong>Temporal:</strong> Hour (0-23), Day of Week (0-6), Is Weekend (binary), Time Delta (hours since last transaction per <code>cc_num</code>). <strong>Demographic:</strong> Age = (transaction date - <code>dob</code>).days / 365. <strong>Transactional:</strong> Log(<code>amt</code>); user-level features like transaction count or average <code>amt</code> per <code>cc_num</code>. <strong>Interactions:</strong> Optionally, distance * <code>amt</code> or hour * category for Decision Trees/Random Forests.
+                </p>
+                <p class="text-lg text-gray-300 mt-4">
+                    This results in ~15-20 features suitable for the models. Scale numerical features for Logistic Regression and SVM; tune hyperparameters for all models. Evaluate feature importance (e.g., coefficients, Gini impurity) to refine selections.
+                </p>
+            </div>
         </section>
 
         <!-- Additional Notes -->
-        <section id="notes" class="mb-16 fade-in">
+        <section class="mb-12 fade-in">
             <h2 class="text-4xl font-bold section-header mb-6">Additional Notes</h2>
-            <p class="text-lg text-gray-700 bg-white p-6 rounded-lg shadow-md">
-                If your assessment has specific requirements (e.g., focus on classification, deep learning, or computational complexity), the recommendations can be tailored. For example, you could replace Transformer Networks with <strong>Ridge Regression</strong> (Lectures 3, 7, 8) for regularization-focused discussion or <strong>ARIMA</strong> (Lecture 3) for time series analysis. The full list of 66 models is available for further exploration. Detailed information on specific models (e.g., hyperparameters, applications, or lecture page references) can be provided to support your assessment preparation. For the fraud detection task, additional preprocessing or model tuning strategies can be explored based on specific performance metrics or dataset characteristics.
-            </p>
+            <div class="accordion-header">
+                <h3 class="text-xl font-semibold text-white">Additional Notes</h3>
+            </div>
+            <div class="accordion-content">
+                <p class="text-lg text-gray-300">
+                    If your assessment has specific requirements (e.g., focus on classification, deep learning, or computational complexity), the recommendations can be tailored. For example, you could replace Transformer Networks with <strong>Ridge Regression</strong> (Lectures 3, 7, 8) for regularization-focused discussion or <strong>ARIMA</strong> (Lecture 3) for time series analysis. The full list of 66 models is available for further exploration. Detailed information on specific models (e.g., hyperparameters, applications, or lecture page references) can be provided to support your assessment preparation. For the fraud detection task, additional preprocessing or model tuning strategies can be explored based on specific performance metrics or dataset characteristics.
+                </p>
+            </div>
         </section>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gradient-to-r from-blue-700 to-indigo-600 text-white py-8 text-center">
+    <footer class="footer-bg text-white py-8 text-center">
         <p class="text-lg">© 2025 Machine Learning Models & Fraud Detection. All rights reserved.</p>
     </footer>
 </body>
