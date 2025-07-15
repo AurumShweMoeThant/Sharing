@@ -1,1 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide: Processing Electronics Dataset</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+        .code-block {
+            background-color: #f6f8fa;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            padding: 1.5rem;
+            margin: 0;
+        }
+
+        .section-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight-link {
+            color: #3b82f6;
+            text-decoration: underline;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .highlight-link:hover {
+            color: #1d4ed8;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-100 to-gray-200 font-sans text-gray-800 antialiased min-h-screen">
+    <div class="container mx-auto px-4 py-12 max-w-5xl">
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-extrabold text-gray-900 mb-4 drop-shadow-md">Guide: Processing Electronics Dataset
+            </h1>
+            <p class="text-xl text-gray-700">Scalable Cloud-Based Sentiment Analysis for Amazon Electronics Reviews</p>
+        </header>
+
+        <main class="space-y-8">
+            <section class="bg-white rounded-xl shadow-lg p-8 section-card" aria-labelledby="phase1-data-prep">
+                <h2 id="phase1-data-prep"
+                    class="text-3xl font-semibold text-gray-800 mb-6 border-b-2 border-indigo-500 pb-2">Phase 1: Data
+                    Preparation</h2>
+                <p class="text-lg text-gray-600 leading-relaxed">Upload the original dataset, Electronics.json (around
+                    11 GB) to S3.</p>
+            </section>
+
+            <section class="bg-white rounded-xl shadow-lg p-8 section-card" aria-labelledby="phase1-emr">
+                <h2 id="phase1-emr" class="text-3xl font-semibold text-gray-800 mb-6 border-b-2 border-indigo-500 pb-2">
+                    Phase 1: AWS EMR Setup and Processing</h2>
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">Create EMR Cluster</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Create a cluster on EMR with 2 cores. Use the
+                    following bootstrap script:</p>
+                <div class="code-block">
+                    <pre><code class="language-bash">
+#!/bin/bash
+                    
+# Exit on any error
+set -e
+                    
+# Log file for debugging
+LOG_FILE="/tmp/bootstrap.log"
+echo "Starting bootstrap script..." | tee -a $LOG_FILE
+                    
+# Update system packages
+echo "Updating system packages..." | tee -a $LOG_FILE
+sudo yum update -y >> $LOG_FILE 2>&1
+                    
+# Check Python version
+PYTHON_VERSION=$(python3 --version | cut -d' ' -f2 | cut -d'.' -f1,2)
+NLTK_DATA_PATH="/usr/local/lib/python${PYTHON_VERSION}/dist-packages/nltk_data"
+echo "Detected Python version: $PYTHON_VERSION" | tee -a $LOG_FILE
+echo "NLTK data path: $NLTK_DATA_PATH" | tee -a $LOG_FILE
+                    
+# Install Python dependencies
+echo "Installing Python dependencies..." | tee -a $LOG_FILE
+sudo pip3 install boto3 pandas plotly kaleido textblob numpy nltk >> $LOG_FILE 2>&1
+                    
+# Install NLTK data for TextBlob
+echo "Installing NLTK data..." | tee -a $LOG_FILE
+sudo mkdir -p $NLTK_DATA_PATH
+sudo python3 -c "import nltk; nltk.download('punkt', download_dir='$NLTK_DATA_PATH');
+nltk.download('averaged_perceptron_tagger', download_dir='$NLTK_DATA_PATH'); nltk.download('brown',
+download_dir='$NLTK_DATA_PATH')" >> $LOG_FILE 2>&1
+                    
+# Install Google Chrome for Kaleido (Plotly image rendering)
+echo "Installing Google Chrome..." | tee -a $LOG_FILE
+sudo wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm >> $LOG_FILE 2>&1
+sudo yum install -y ./google-chrome-stable_current_x86_64.rpm >> $LOG_FILE 2>&1
+sudo rm -f google-chrome-stable_current_x86_64.rpm >> $LOG_FILE 2>&1
+                    
+# Verify installations
+echo "Verifying Python package installations..." | tee -a $LOG_FILE
+pip3 show boto3 pandas plotly kaleido textblob numpy nltk >> $LOG_FILE 2>&1
+                    
+# Check NLTK data
+echo "Verifying NLTK data..." | tee -a $LOG_FILE
+ls -l $NLTK_DATA_PATH >> $LOG_FILE 2>&1
+                    
+echo "Bootstrap script completed successfully." | tee -a $LOG_FILE
+exit 0
+                    </code></pre>
+                </div>
+                <p class="mt-6 text-lg text-gray-600 leading-relaxed">Write the script on your local machine via Visual
+                    Studio Code, save it, upload to S3, and use it as the bootstrap file when creating the cluster.</p>
+
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">EMR Processing Script</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Run the following PySpark script (<a
+                        class="highlight-link"
+                        href="https://github.com/ShweMoeThantAurum/Scalable-Cloud-Programming-Project/blob/main/data_ingestion.py">data_ingestion.py</a>)
+                    on the EMR cluster:</p>
+                <div class="code-block">
+                    <pre><code class="language-python">
+import logging
+import boto3
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, lower, spark_partition_id
+from pyspark.sql.types import StructType, StructField, StringType
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+INPUT_PATH = "s3://electronics-reviews-bucket/Electronics.json"
+OUTPUT_PATH = "s3://electronics-reviews-bucket/processed_text_data_original/"
+BUCKET_NAME = "electronics-reviews-bucket"
+OUTPUT_PREFIX = "processed_text_data_original/"
+
+def main():
+    spark = SparkSession.builder.appName("ElectronicsTextDataIngestion").getOrCreate()
+    schema = StructType([StructField("reviewText", StringType(), True)])
+    try:
+        df_text = spark.read.option("multiLine", False).schema(schema).json(INPUT_PATH) \
+            .filter(col("reviewText").isNotNull()) \
+            .select(lower(col("reviewText")).alias("cleaned_reviewText"))
+        df_text.write.mode("overwrite").parquet(OUTPUT_PATH)
+        record_count = df_text.count()
+        partition_count = df_text.select(spark_partition_id()).distinct().count()
+        logger.info(f"Total records ingested: {record_count}")
+        logger.info(f"Number of partitions: {partition_count}")
+        s3_client = boto3.client('s3')
+        response = s3_client.list_objects_v2(Bucket=BUCKET_NAME, Prefix=OUTPUT_PREFIX)
+        total_size_bytes = sum(obj['Size'] for obj in response.get('Contents', []))
+        total_size_gb = total_size_bytes / (1024 ** 3)
+        logger.info(f"Total output file size: {total_size_gb:.2f} GB")
+    except Exception as e:
+        logger.error(f"Error during data ingestion: {e}")
+    finally:
+        spark.stop()
+
+if __name__ == "__main__":
+    main()
+                    </code></pre>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-xl shadow-lg p-8 section-card" aria-labelledby="phase2">
+                <h2 id="phase2" class="text-3xl font-semibold text-gray-800 mb-6 border-b-2 border-indigo-500 pb-2">
+                    Phase 2: MapReduce Implementation</h2>
+                <p class="text-lg text-gray-600 mb-6 leading-relaxed">Add the following files to the project:</p>
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">20percent.py</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Run this script (<a class="highlight-link"
+                        href="https://github.com/ShweMoeThantAurum/Scalable-Cloud-Programming-Project/blob/main/20percent.py">20percent.py</a>)
+                    for 20% data processing:</p>
+                <div class="code-block">
+                    <pre><code class="language-python">
+<Code Here>
+                    </code></pre>
+                </div>
+
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">40percent.py</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Run this script (<a class="highlight-link"
+                        href="https://github.com/ShweMoeThantAurum/Scalable-Cloud-Programming-Project/blob/main/40percent.py">40percent.py</a>)
+                    for 40% data processing:</p>
+                <div class="code-block">
+                    <pre><code class="language-python">
+<Code Here>
+                    </code></pre>
+                </div>
+
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">60percent.py</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Run this script (<a class="highlight-link"
+                        href="https://github.com/ShweMoeThantAurum/Scalable-Cloud-Programming-Project/blob/main/60percent.py">60percent.py</a>)
+                    for 60% data processing:</p>
+                <div class="code-block">
+                    <pre><code class="language-python">
+<Code Here>
+                    </code></pre>
+                </div>
+
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">80percent.py</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Run this script (<a class="highlight-link"
+                        href="https://github.com/ShweMoeThantAurum/Scalable-Cloud-Programming-Project/blob/main/80percent.py">80percent.py</a>)
+                    for 80% data processing:</p>
+                <div class="code-block">
+                    <pre><code class="language-python">
+<Code Here>
+                    </code></pre>
+                </div>
+
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">100percent.py</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Run this script (<a class="highlight-link"
+                        href="https://github.com/ShweMoeThantAurum/Scalable-Cloud-Programming-Project/blob/main/100percent.py">100percent.py</a>)
+                    for 100% data processing:</p>
+                <div class="code-block">
+                    <pre><code class="language-python">
+<Code Here>
+                    </code></pre>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-xl shadow-lg p-8 section-card" aria-labelledby="phase2-stream">
+                <h2 id="phase2-stream"
+                    class="text-3xl font-semibold text-gray-800 mb-6 border-b-2 border-indigo-500 pb-2">
+                    Phase 2: Stream Processing</h2>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">After processing the dataset, the output was in
+                    Parquet format. Streaming Parquet files using Kinesis with PySpark was challenging due to Java
+                    dependency issues, so the data was converted to JSON first.</p>
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">Convert Parquet to JSON</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Launch a t3.medium EC2 instance and run the
+                    following script (<a class="highlight-link"
+                        href="https://github.com/ShweMoeThantAurum/Scalable-Cloud-Programming-Project/blob/main/convert_parquet_to_json.py">convert_parquet_to_json.py</a>)
+                    to convert Parquet files to JSON, saving the output to S3:</p>
+                <div class="code-block">
+                    <pre><code class="language-python">
+<Code Here>
+                    </code></pre>
+                </div>
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">Stream Data to Kinesis</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Create a Kinesis stream, ensuring correct file
+                    names and paths. Upload and run the following script (<a class="highlight-link"
+                        href="https://github.com/ShweMoeThantAurum/Scalable-Cloud-Programming-Project/blob/main/send_json_to_kinesis.py">send_json_to_kinesis.py</a>)
+                    to push JSON data to the Kinesis stream:</p>
+                <div class="code-block">
+                    <pre><code class="language-python">
+<Code Here>
+                    </code></pre>
+                </div>
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">Process the Kinesis Stream</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Upload the following script (<a
+                        class="highlight-link"
+                        href="https://github.com/ShweMoeThantAurum/Scalable-Cloud-Programming-Project/blob/main/stream_processing.py">stream_processing.py</a>)
+                    to the EC2 instance to process the incoming stream in real-time:</p>
+                <div class="code-block">
+                    <pre><code class="language-python">
+<Code Here>
+                    </code></pre>
+                </div>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">To execute, SSH into the EC2 instance with two
+                    terminal sessions. In the first, run <code>send_json_to_kinesis.py</code>. In the second, run
+                    <code>stream_processing.py</code>.
+                </p>
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">Configure AWS CLI</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Before running the scripts, configure AWS CLI
+                    credentials by running:</p>
+                <div class="code-block">
+                    <pre><code class="language-bash">
+aws configure
+                    </code></pre>
+                </div>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Provide the following:</p>
+                <ul class="list-disc pl-6 text-lg text-gray-600 mb-4 leading-relaxed">
+                    <li>AWS_ACCESS_KEY_ID: Paste from your current learner lab session</li>
+                    <li>AWS_SECRET_ACCESS_KEY: Paste from the same session</li>
+                    <li>AWS_DEFAULT_REGION: Type <code>us-east-1</code></li>
+                    <li>AWS_DEFAULT_FORMAT: Press Enter</li>
+                </ul>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Add the session token by editing the credentials
+                    file:</p>
+                <div class="code-block">
+                    <pre><code class="language-bash">
+nano ~/.aws/credentials
+                    </code></pre>
+                </div>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Append the following line at the bottom, replacing
+                    with your session token:</p>
+                <div class="code-block">
+                    <pre><code class="language-bash">
+AWS_SESSION_TOKEN=<your_current_AWS_SESSION_TOKEN>
+                    </code></pre>
+                </div>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Stream processing is now complete ✅</p>
+            </section>
+
+            <section class="bg-white rounded-xl shadow-lg p-8 section-card" aria-labelledby="phase2-hybrid">
+                <h2 id="phase2-hybrid"
+                    class="text-3xl font-semibold text-gray-800 mb-6 border-b-2 border-indigo-500 pb-2">
+                    Phase 2: Hybrid Parallelism</h2>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Create an EMR cluster as done for MapReduce in
+                    Phase 2, attaching the bootstrap file from your S3 bucket.</p>
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">Install Dependencies</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Install <code>psutil</code> on the EMR cluster:
+                </p>
+                <div class="code-block">
+                    <pre><code class="language-bash">
+pip install --user psutil
+                    </code></pre>
+                </div>
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">Configure AWS Credentials</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Set up AWS credentials by exporting the following
+                    environment variables, replacing with your learner lab credentials:</p>
+                <div class="code-block">
+                    <pre><code class="language-bash">
+export AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID>
+export AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
+export AWS_SESSION_TOKEN=<AWS_SESSION_TOKEN>
+export AWS_DEFAULT_REGION=us-east-1
+                    </code></pre>
+                </div>
+                <h3 class="text-2xl font-medium text-gray-700 mb-4 mt-6">Run Hybrid Parallelism Script</h3>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Upload and run the following script (<a
+                        class="highlight-link"
+                        href="https://github.com/ShweMoeThantAurum/Scalable-Cloud-Programming-Project/blob/main/hybrid_parallelism.py">hybrid_parallelism.py</a>)
+                    on the EMR cluster:</p>
+                <div class="code-block">
+                    <pre><code class="language-python">
+<Code Here>
+                    </code></pre>
+                </div>
+                <p class="text-lg text-gray-600 mb-4 leading-relaxed">Hybrid Parallelism is now complete ✅</p>
+            </section>
+
+            <section class="bg-white rounded-xl shadow-lg p-8 section-card" aria-labelledby="resources">
+                <h2 id="resources" class="text-3xl font-semibold text-gray-800 mb-6 border-b-2 border-indigo-500 pb-2">
+                    Additional Resources</h2>
+                <p class="text-lg text-gray-600 leading-relaxed">For more details, refer to the sample report (<a
+                        class="highlight-link"
+                        href="https://github.com/ShweMoeThantAurum/Scalable-Cloud-Programming-Project/blob/main/Scalable_Cloud_Computing_Report.pdf">Scalable_Cloud_Computing_Report.pdf</a>).
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>
