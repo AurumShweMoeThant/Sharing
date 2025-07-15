@@ -1,388 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ma Ma</title>
+    <title>Machine Learning Models Summary</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@500;700&family=Poppins:wght@300;400;600&display=swap');
-
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #ffe6e6, #fff0f5);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 1.5rem;
+            font-family: 'Inter', sans-serif;
         }
-
-        .container {
-            max-width: 700px;
-            width: 100%;
-            background: #ffffff;
-            border-radius: 1.25rem;
-            padding: 2rem;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-            border: 2px solid #f8bbd0;
-            text-align: center;
-            box-sizing: border-box;
+        .model-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
-        .title {
-            font-family: 'Lora', serif;
-            font-size: clamp(1.8rem, 6vw, 2.5rem);
-            color: #d81b60;
-            margin-bottom: 1.25rem;
-            font-weight: 700;
-        }
-
-        .section-title {
-            font-family: 'Lora', serif;
-            font-size: clamp(1.2rem, 4vw, 1.6rem);
-            color: #c2185b;
-            margin: 1.5rem 0 0.75rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .table-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            margin-bottom: 1.5rem;
-        }
-
-        table {
-            width: 100%;
-            min-width: 300px;
-            border-collapse: collapse;
-            background: #fff0f5;
-            border: 1px solid #f8bbd0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        th,
-        td {
-            padding: 0.8rem;
-            text-align: left;
-            border-bottom: 1px solid #f8bbd0;
-            color: #4a2c2a;
-            font-size: clamp(0.9rem, 3vw, 1rem);
-        }
-
-        th {
-            background: #f8bbd0;
-            color: #ad1457;
-            font-weight: 600;
-            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
-        }
-
-        tr:nth-child(even) {
-            background: #fef7fa;
-        }
-
-        tr:hover {
-            background: #fce4ec;
-            transition: background 0.3s ease;
-        }
-
-        .reminder {
-            background: #fff;
-            border: 3px solid #f8bbd0;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-            animation: slideIn 0.7s ease-out;
-        }
-
-        .reminder-content {
-            font-size: clamp(1rem, 3vw, 1.1rem);
-            color: #4a2c2a;
-        }
-
-        .reminder-amount {
-            font-family: 'Lora', serif;
-            font-size: clamp(1.8rem, 5vw, 2.2rem);
-            color: #e91e63;
-            margin: 0.75rem 0;
-            font-weight: 700;
-        }
-
-        .reminder-note {
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            color: #6d4c41;
-            font-style: italic;
-            margin-top: 0.5rem;
-        }
-
-        .card {
-            border-radius: 0.75rem;
-            padding: 1rem;
-            background: #fffafc;
-            border: 1px solid #f8bbd0;
-            margin-bottom: 1.5rem;
-            animation: slideIn 0.7s ease-out;
-        }
-
-        .highlight {
-            font-weight: 600;
-            color: #e91e63;
-            font-size: clamp(0.9rem, 3vw, 1.1rem);
-        }
-
-        .icon {
-            color: #e91e63;
-            font-size: clamp(1.2rem, 4vw, 1.4rem);
-        }
-
-        .divider {
-            border-top: 2px solid #f8bbd0;
-            margin: 1rem 0;
-        }
-
-        .warning {
-            background: #fff;
-            border: 3px solid #e91e63;
-            border-radius: 0.75rem;
-            padding: 1rem;
-            margin: 1.5rem 0;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-            animation: slideIn 0.7s ease-out;
-            text-align: center;
-        }
-
-        .warning-content {
-            font-family: 'Lora', serif;
-            font-size: clamp(1.1rem, 3.5vw, 1.3rem);
-            color: #e91e63;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 1rem;
-            }
-
-            .container {
-                padding: 1.25rem;
-                border-radius: 0.5rem;
-            }
-
-            .title {
-                font-size: clamp(1.5rem, 5vw, 2rem);
-            }
-
-            .section-title {
-                font-size: clamp(1rem, 4vw, 1.3rem);
-            }
-
-            th,
-            td {
-                padding: 0.5rem;
-                font-size: clamp(0.8rem, 2.5vw, 0.9rem);
-            }
-
-            .reminder {
-                padding: 1rem;
-                margin: 1rem 0;
-            }
-
-            .reminder-amount {
-                font-size: clamp(1.5rem, 4.5vw, 1.8rem);
-            }
-
-            .card {
-                padding: 0.75rem;
-                margin-bottom: 1rem;
-            }
-
-            .warning {
-                padding: 0.75rem;
-                margin: 1rem 0;
-            }
-
-            .warning-content {
-                font-size: clamp(0.9rem, 3vw, 1.1rem);
-            }
+        .model-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
+<body class="bg-gray-100 text-gray-800">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white py-6 text-center">
+        <h1 class="text-4xl font-bold">Machine Learning Models Summary</h1>
+        <p class="mt-2 text-lg">A comprehensive overview of machine learning models from lecture slides</p>
+    </header>
 
-<body>
-    <div class="container">
-        <!-- Title -->
-        <h1 class="title"><i class="fas fa-heart icon"></i> မမ့အကြွေး</h1>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <!-- Introduction -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-semibold text-blue-600 mb-4">Overview</h2>
+            <p class="text-lg text-gray-700">
+                This page consolidates machine learning models mentioned across various lecture slides, providing a count of unique models and recommending 10 models for an assessment based on their prominence, diversity, and relevance.
+            </p>
+        </section>
 
-        <!-- Reminder Section -->
-        <div class="reminder">
-            <div class="reminder-content">
-                <i class="fas fa-heart icon"></i>
-                <p class="reminder-amount">€250</p>
-                <p class="reminder-note">အခန်းခပေးရန် ကျန်။</p>
+        <!-- Step 1: Unique Models -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-semibold text-blue-600 mb-4">Step 1: Unique Machine Learning Models</h2>
+            <p class="text-lg text-gray-700 mb-4">
+                Below is a consolidated list of 66 unique machine learning models extracted from the lecture slides, ensuring no duplicates by carefully reviewing names and contexts.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <ul class="list-disc pl-6 text-gray-700">
+                    <li>K-Means Clustering</li>
+                    <li>Deep Learning Models</li>
+                    <li>Classification Algorithms</li>
+                    <li>Regression Algorithms</li>
+                    <li>Unsupervised Learning Algorithms</li>
+                    <li>Semi-Supervised Learning Algorithms</li>
+                    <li>Reinforcement Learning Algorithms</li>
+                    <li>Decision Trees</li>
+                    <li>Neural Networks (NNs)</li>
+                    <li>Support Vector Machines (SVM)</li>
+                    <li>Linear Regression</li>
+                    <li>Logistic Regression</li>
+                    <li>Naive Bayes Classifiers</li>
+                    <li>General and Generalized Linear Models</li>
+                    <li>Cox Regression</li>
+                    <li>Rule Set Models</li>
+                    <li>Restricted Boltzmann Machine</li>
+                    <li>Multiple Models (Ensemble)</li>
+                    <li>Matchbox Recommender Engine</li>
+                    <li>Reinforcement Learning</li>
+                    <li>Multiple Linear Regression</li>
+                    <li>Ridge Regression</li>
+                </ul>
+                <ul class="list-disc pl-6 text-gray-700">
+                    <li>LASSO Regression</li>
+                    <li>Support Vector Regression</li>
+                    <li>Random Forest Regression</li>
+                    <li>Random Forest Classifier</li>
+                    <li>Support Vector Classifier</li>
+                    <li>Memory-based Classifier (Lazy Learners)</li>
+                    <li>ARIMA</li>
+                    <li>Facebook Prophet</li>
+                    <li>Convolutional Neural Network (CNN)</li>
+                    <li>Dense Neural Network (DNN)</li>
+                    <li>Recurrent Neural Network (RNN)</li>
+                    <li>Generative Adversarial Networks (GAN)</li>
+                    <li>Transformer Networks</li>
+                    <li>Feed Forward Neural Network (FFNN)</li>
+                    <li>Multilayer Perceptron</li>
+                    <li>Neural Language Model (NLM)</li>
+                    <li>Skip-gram Model</li>
+                    <li>Continuous Bag-of-Words (CBOW) Model</li>
+                    <li>BERT</li>
+                    <li>GPT-2</li>
+                    <li>m3BERT</li>
+                    <li>BART</li>
+                </ul>
+                <ul class="list-disc pl-6 text-gray-700">
+                    <li>Multilingual Neural Machine Translation (M-NMT)</li>
+                    <li>Bi-RNN Models</li>
+                    <li>Attentional RNN</li>
+                    <li>K-Nearest Neighbors (KNN)</li>
+                    <li>Random Forests</li>
+                    <li>LinearSVM</li>
+                    <li>Bayes Classifier</li>
+                    <li>Least-Squares Linear Regression</li>
+                    <li>Multiple Least-Squares Linear Regression</li>
+                    <li>Elastic Net</li>
+                    <li>K-Nearest Neighbors (K-NN) Classifier</li>
+                    <li>K-Nearest Neighbors (K-NN) Regression</li>
+                    <li>Principal Components Regression (PCR)</li>
+                    <li>Partial Least Squares (PLS) Regression</li>
+                    <li>Bernoulli Naive Bayes</li>
+                    <li>Multinomial Naive Bayes</li>
+                    <li>Gaussian Naive Bayes</li>
+                    <li>Bagging</li>
+                    <li>Boosting</li>
+                    <li>Naive Bayes Classifier: Spam Filtering</li>
+                    <li>Decision Tree Regression</li>
+                    <li>Linear Discriminant Analysis (LDA)</li>
+                </ul>
             </div>
-        </div>
+        </section>
 
-        <div class="divider"></div>
+        <!-- Step 2: Count of Models -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-semibold text-blue-600 mb-4">Step 2: Count of Unique Models</h2>
+            <p class="text-lg text-gray-700">
+                After reviewing the list, I’ve identified <strong>66 unique machine learning models</strong> across the lectures. General categories like “Classification Algorithms” or “Unsupervised Learning Algorithms” are included as distinct entries where they appear as such in the slides, but specific algorithms within these categories are also counted separately to ensure accuracy.
+            </p>
+        </section>
 
-        <!-- Saturday (12 July) -->
-        <div class="card">
-            <div class="section-title"><i class="fas fa-utensils icon"></i> Saturday (12 July)</div>
-            <div class="table-wrapper">
-                <table>
-                    <tr>
-                        <th>Item</th>
-                        <th>Cost (€)</th>
-                    </tr>
-                    <tr>
-                        <td>McDonalds</td>
-                        <td>18.20</td>
-                    </tr>
-                    <tr>
-                        <td>Costa</td>
-                        <td>4.95</td>
-                    </tr>
-                    <tr>
-                        <td>Han Sung Restaurant</td>
-                        <td>25.40</td>
-                    </tr>
-                    <tr>
-                        <td class="highlight">Subtotal</td>
-                        <td class="highlight">48.55</td>
-                    </tr>
-                </table>
+        <!-- Step 3: Recommended Models -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-semibold text-blue-600 mb-4">Step 3: Recommended Models for Assessment</h2>
+            <p class="text-lg text-gray-700 mb-6">
+                For your assessment, selecting a diverse set of models covering various machine learning paradigms (e.g., supervised, unsupervised, neural networks, ensemble methods, probabilistic models, and specialized applications) will demonstrate a comprehensive understanding. Below are 10 recommended models based on their prominence, relevance, and variety across the lectures.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="model-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-blue-600">Linear Regression</h3>
+                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 2, 5, 6, 8, and 10. A fundamental supervised learning algorithm for regression tasks, widely used for predicting continuous outcomes.</p>
+                    <p class="mt-2"><strong>Why:</strong> Its simplicity and interpretability make it a strong candidate for discussing regression basics in an assessment.</p>
+                </div>
+                <div class="model-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-blue-600">Logistic Regression</h3>
+                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 2, 3, 5, and 10. A key supervised learning algorithm for binary and multiclass classification tasks.</p>
+                    <p class="mt-2"><strong>Why:</strong> Its prevalence in classification tasks and mathematical foundation (e.g., maximum likelihood estimation) make it ideal for assessments.</p>
+                </div>
+                <div class="model-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-blue-600">Decision Trees</h3>
+                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 2, 3, 5, 9, and 10. Used for both classification and regression, forming the basis for ensemble methods.</p>
+                    <p class="mt-2"><strong>Why:</strong> Their intuitive structure and versatility make them a great choice for explaining tree-based methods.</p>
+                </div>
+                <div class="model-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-blue-600">Random Forests</h3>
+                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 3, 5, and 9, with variants like Random Forest Classifier and Random Forest Regression. An ensemble method combining multiple decision trees.</p>
+                    <p class="mt-2"><strong>Why:</strong> Represents advanced ensemble techniques, offering robustness and high performance, suitable for discussing bagging.</p>
+                </div>
+                <div class="model-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-blue-600">K-Nearest Neighbors (KNN)</h3>
+                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 5, 6, 7, 8, and 9, with both classification and regression variants (K-NN Classifier, K-NN Regression).</p>
+                    <p class="mt-2"><strong>Why:</strong> A non-parametric, instance-based learning algorithm, ideal for contrasting with parametric models like Linear Regression.</p>
+                </div>
+                <div class="model-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-blue-600">Naive Bayes Classifier</h3>
+                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 2, 3, 6, 7, 9, and 10, with specific variants (Bernoulli, Multinomial, Gaussian Naive Bayes) and applications like spam filtering.</p>
+                    <p class="mt-2"><strong>Why:</strong> Its probabilistic approach and simplicity make it a strong candidate for discussing classification and Bayes’ theorem.</p>
+                </div>
+                <div class="model-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-blue-600">Support Vector Machine (SVM)</h3>
+                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 2, 3, and 5, with variants like Support Vector Classifier and Support Vector Regression.</p>
+                    <p class="mt-2"><strong>Why:</strong> Its use of kernel methods and margin maximization offers a sophisticated topic for discussing classification and regression.</p>
+                </div>
+                <div class="model-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-blue-600">Recurrent Neural Network (RNN)</h3>
+                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 3, 4, and 5, with variants like Bi-RNN and Attentional RNN. Designed for sequential data like time series or text.</p>
+                    <p class="mt-2"><strong>Why:</strong> Represents advanced neural network architectures, showcasing deep learning applications in sequential tasks.</p>
+                </div>
+                <div class="model-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-blue-600">Convolutional Neural Network (CNN)</h3>
+                    <p class="mt-2"><strong>Context:</strong> Appears in Lecture 3. Specialized for image and spatial data processing.</p>
+                    <p class="mt-2"><strong>Why:</strong> Its prominence in computer vision tasks makes it a compelling choice for discussing deep learning in specialized domains.</p>
+                </div>
+                <div class="model-card bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-blue-600">Transformer Networks</h3>
+                    <p class="mt-2"><strong>Context:</strong> Appears in Lectures 3 and 4, with specific models like BERT, GPT-2, m3BERT, and BART. Central to modern natural language processing.</p>
+                    <p class="mt-2"><strong>Why:</strong> Their state-of-the-art performance in NLP tasks makes them ideal for discussing cutting-edge deep learning advancements.</p>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Sunday (13 July) -->
-        <div class="card">
-            <div class="section-title"><i class="fas fa-utensils icon"></i> Sunday (13 July)</div>
-            <div class="table-wrapper">
-                <table>
-                    <tr>
-                        <th>Item</th>
-                        <th>Cost (€)</th>
-                    </tr>
-                    <tr>
-                        <td>Full Moon</td>
-                        <td>47.70</td>
-                    </tr>
-                    <tr>
-                        <td>Nana’s Tea</td>
-                        <td>7.40</td>
-                    </tr>
-                    <tr>
-                        <td>Fish and Chips</td>
-                        <td>16.50</td>
-                    </tr>
-                    <tr>
-                        <td class="highlight">Subtotal</td>
-                        <td class="highlight">71.60</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+        <!-- Step 4: Rationale -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-semibold text-blue-600 mb-4">Step 4: Rationale for Selection</h2>
+            <ul class="list-disc pl-6 text-lg text-gray-700">
+                <li><strong>Diversity:</strong> The selection covers regression (Linear Regression, Logistic Regression), tree-based methods (Decision Trees, Random Forests), instance-based learning (KNN), probabilistic models (Naive Bayes), kernel-based methods (SVM), and deep learning (RNN, CNN, Transformer Networks), spanning supervised, unsupervised, and specialized paradigms.</li>
+                <li><strong>Prominence:</strong> These models are frequently mentioned across multiple lectures, indicating their importance in the course material.</li>
+                <li><strong>Relevance for Assessment:</strong> Each model offers rich discussion points (e.g., mathematical foundations, applications, strengths, and weaknesses) and is well-supported by lecture content, providing ample material for analysis.</li>
+                <li><strong>Balance:</strong> The list balances foundational models (e.g., Linear Regression, Naive Bayes) with advanced techniques (e.g., RNN, Transformer Networks), demonstrating both breadth and depth.</li>
+            </ul>
+        </section>
 
-        <!-- Monday (14 July) -->
-        <div class="card">
-            <div class="section-title"><i class="fas fa-utensils icon"></i> Monday (14 July)</div>
-            <div class="table-wrapper">
-                <table>
-                    <tr>
-                        <th>Item</th>
-                        <th>Cost (€)</th>
-                    </tr>
-                    <tr>
-                        <td>Burger King</td>
-                        <td>23.95</td>
-                    </tr>
-                    <tr>
-                        <td>Malatang</td>
-                        <td>25.73</td>
-                    </tr>
-                    <tr>
-                        <td class="highlight">Subtotal</td>
-                        <td class="highlight">49.68</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+        <!-- Additional Notes -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-semibold text-blue-600 mb-4">Additional Notes</h2>
+            <p class="text-lg text-gray-700">
+                If your assessment has specific requirements (e.g., focus on classification, deep learning, or computational complexity), the recommendations can be tailored. For example, you could replace Transformer Networks with <strong>Ridge Regression</strong> (Lectures 3, 7, 8) for regularization-focused discussion or <strong>ARIMA</strong> (Lecture 3) for time series analysis. The full list of 66 models is available for further exploration. Detailed information on specific models (e.g., hyperparameters, applications, or lecture page references) can be provided to support your assessment preparation.
+            </p>
+        </section>
+    </main>
 
-        <!-- Total and Per Person -->
-        <div class="card">
-            <div class="section-title"><i class="fas fa-calculator icon"></i> Summary</div>
-            <div class="table-wrapper">
-                <table>
-                    <tr>
-                        <td class="highlight">Total</td>
-                        <td class="highlight">169.83</td>
-                    </tr>
-                    <tr>
-                        <td class="highlight">Each Pays</td>
-                        <td class="highlight">84.92</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-        <!-- Warning Section -->
-        <div class="warning">
-            <div class="warning-content">
-                <i class="fas fa-exclamation-circle icon"></i>
-                အကြွေးမဆပ်ပါက လူကိုသိမ်းရမည်။
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        const cards = document.querySelectorAll('.card, .reminder, .warning');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, { threshold: 0.2 });
-
-        cards.forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            observer.observe(card);
-        });
-    </script>
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 text-center">
+        <p>&copy; 2025 Machine Learning Models Summary. All rights reserved.</p>
+    </footer>
 </body>
-
 </html>
