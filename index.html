@@ -1,559 +1,974 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Machine Learning Models & Fraud Detection</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Comparative Analysis of Machine Learning Techniques for Credit Card Fraud Prediction</title>
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1f2937;
-            color: #e5e7eb;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
         }
-        .section-header {
-            background: linear-gradient(to right, #60a5fa, #a5b4fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 8px;
         }
-        .model-card, .feature-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            background: linear-gradient(145deg, #374151, #4b5563);
+
+        nav {
+            margin: 20px 0;
+            text-align: center;
         }
-        .model-card:hover, .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
         }
-        .fade-in {
-            animation: fadeIn 1s ease-in-out;
+
+        nav a:hover {
+            text-decoration: underline;
         }
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
+
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .accordion-header {
-            cursor: pointer;
-            background: #4b5563;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            transition: background 0.3s;
+
+        h2 {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
         }
-        .accordion-header:hover {
-            background: #6b7280;
+
+        h3 {
+            color: #0056b3;
         }
-        .accordion-content {
-            display: none;
-            padding: 1rem;
-            background: #374151;
-            border-radius: 0 0 0.5rem 0.5rem;
+
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
         }
-        .accordion-content.active {
-            display: block;
-        }
-        .model-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-        .header-bg {
-            background: linear-gradient(to right, #1e40af, #4f46e5);
-        }
-        .footer-bg {
-            background: linear-gradient(to right, #1e40af, #4f46e5);
-        }
-        pre {
-            background: #2d3748;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            overflow-x: auto;
-            color: #e5e7eb;
-            font-size: 0.9rem;
-        }
+
         code {
-            font-family: 'Courier New', Courier, monospace;
+            background-color: #e9ecef;
+            padding: 2px 4px;
+            border-radius: 4px;
         }
-        /* Responsive Adjustments */
-        @media (max-width: 640px) {
-            .text-5xl { font-size: 2.25rem; line-height: 2.5rem; }
-            .text-4xl { font-size: 1.875rem; line-height: 2.25rem; }
-            .text-2xl { font-size: 1.5rem; line-height: 2rem; }
-            .text-xl { font-size: 1.125rem; line-height: 1.75rem; }
-            .text-lg { font-size: 1rem; line-height: 1.5rem; }
-            .py-16 { padding-top: 3rem; padding-bottom: 3rem; }
-            .py-12 { padding-top: 2rem; padding-bottom: 2rem; }
-            .px-4 { padding-left: 1rem; padding-right: 1rem; }
-            .model-list {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 0.75rem;
-            }
-            .model-card, .feature-card {
-                padding: 1rem;
-            }
-            .max-w-3xl { max-width: 100%; }
-            .max-w-7xl { max-width: 100%; }
-            pre {
-                font-size: 0.8rem;
-            }
+
+        .question {
+            margin-bottom: 20px;
         }
-        @media (max-width: 768px) {
-            .grid-cols-3, .sm\:grid-cols-2 { grid-template-columns: 1fr; }
-            .lg\:grid-cols-3 { grid-template-columns: 1fr; }
-        }
-        @media (min-width: 640px) and (max-width: 1024px) {
-            .grid-cols-3 { grid-template-columns: repeat(2, 1fr); }
-            .model-list {
-                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            }
+
+        .additional-notes {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 8px;
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.accordion-header').forEach(header => {
-                header.addEventListener('click', () => {
-                    const content = header.nextElementSibling;
-                    content.classList.toggle('active');
-                });
-            });
-        });
-    </script>
 </head>
+
 <body>
-    <!-- Header -->
-    <header class="header-bg text-white py-16 text-center rounded-lg mb-12">
-        <h1 class="text-5xl font-bold section-header">Machine Learning Models & Fraud Detection</h1>
-        <p class="mt-4 text-xl max-w-3xl mx-auto">A comprehensive overview of machine learning models and data preparation strategies for credit card fraud detection, tailored for your assessment.</p>
+    <header>
+        <h1>Comparative Analysis of Machine Learning Techniques for Credit Card Fraud Prediction</h1>
+        <p>This website presents a detailed examination of various machine learning models applied to credit card fraud
+            detection, including their relevance, parameter selections, evaluation metrics, preprocessing decisions, and
+            key findings.</p>
     </header>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <!-- Overview -->
-        <section class="mb-12 fade-in">
-            <h2 class="text-4xl font-bold section-header mb-6">Overview</h2>
-            <div class="accordion-header">
-                <h3 class="text-xl font-semibold text-white">Overview Details</h3>
-            </div>
-            <div class="accordion-content">
-                <p class="text-lg text-gray-300">
-                    This page consolidates machine learning models mentioned across various lecture slides, providing a count of unique models and recommending 10 models for an assessment based on their prominence, diversity, and relevance. Additionally, it includes data cleaning recommendations, model selection, and feature selection strategies for a fraud detection task using the Kaggle Credit Card Transactions Fraud Detection dataset.
-                </p>
-            </div>
-        </section>
+    <nav>
+        <a href="#knn">KNN</a>
+        <a href="#decision-tree">Decision Tree</a>
+        <a href="#logistic-regression">Logistic Regression</a>
+        <a href="#neural-network">Neural Network</a>
+        <a href="#additional-notes">Additional Notes</a>
+    </nav>
 
-        <!-- Unique Models -->
-        <section class="mb-12 fade-in">
-            <h2 class="text-4xl font-bold section-header mb-6">Unique Machine Learning Models</h2>
-            <div class="accordion-header">
-                <h3 class="text-xl font-semibold text-white">Model List (66 Models)</h3>
-            </div>
-            <div class="accordion-content">
-                <p class="text-lg text-gray-300 mb-6">
-                    Below is a consolidated list of 66 unique machine learning models extracted from the lecture slides, ensuring no duplicates by carefully reviewing names and contexts.
-                </p>
-                <div class="model-list">
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">K-Means Clustering</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Deep Learning Models</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Classification Algorithms</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Regression Algorithms</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Unsupervised Learning Algorithms</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Semi-Supervised Learning Algorithms</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Reinforcement Learning Algorithms</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Decision Trees</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Neural Networks (NNs)</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Support Vector Machines (SVM)</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Linear Regression</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Logistic Regression</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Naive Bayes Classifiers</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">General and Generalized Linear Models</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Cox Regression</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Rule Set Models</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Restricted Boltzmann Machine</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Multiple Models (Ensemble)</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Matchbox Recommender Engine</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Reinforcement Learning</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Multiple Linear Regression</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Ridge Regression</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">LASSO Regression</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Support Vector Regression</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Random Forest Regression</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Random Forest Classifier</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Support Vector Classifier</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Memory-based Classifier (Lazy Learners)</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">ARIMA</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Facebook Prophet</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Convolutional Neural Network (CNN)</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Dense Neural Network (DNN)</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Recurrent Neural Network (RNN)</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Generative Adversarial Networks (GAN)</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Transformer Networks</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Feed Forward Neural Network (FFNN)</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Multilayer Perceptron</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Neural Language Model (NLM)</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Skip-gram Model</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Continuous Bag-of-Words (CBOW) Model</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">BERT</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">GPT-2</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">m3BERT</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">BART</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Multilingual Neural Machine Translation (M-NMT)</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Bi-RNN Models</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Attentional RNN</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">K-Nearest Neighbors (KNN)</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Random Forests</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">LinearSVM</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Bayes Classifier</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Least-Squares Linear Regression</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Multiple Least-Squares Linear Regression</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Elastic Net</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">K-Nearest Neighbors (K-NN) Classifier</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">K-Nearest Neighbors (K-NN) Regression</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Principal Components Regression (PCR)</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Partial Least Squares (PLS) Regression</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Bernoulli Naive Bayes</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Multinomial Naive Bayes</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Gaussian Naive Bayes</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Bagging</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Boosting</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Naive Bayes Classifier: Spam Filtering</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Decision Tree Regression</div>
-                    <div class="model-card p-4 rounded-lg shadow-md text-white">Linear Discriminant Analysis (LDA)</div>
-                </div>
-            </div>
-        </section>
+    <section id="knn">
+        <h2>KNN Model</h2>
 
-        <!-- Count of Models -->
-        <section class="mb-12 fade-in">
-            <h2 class="text-4xl font-bold section-header mb-6">Count of Unique Models</h2>
-            <div class="accordion-header">
-                <h3 class="text-xl font-semibold text-white">Count Details</h3>
-            </div>
-            <div class="accordion-content">
-                <p class="text-lg text-gray-300">
-                    After reviewing the list, I’ve identified <strong class="text-blue-400">66 unique machine learning models</strong> across the lectures. General categories like “Classification Algorithms” or “Unsupervised Learning Algorithms” are included as distinct entries where they appear as such in the slides, but specific algorithms within these categories are also counted separately to ensure accuracy.
-                </p>
-            </div>
-        </section>
+        <div class="question">
+            <h3>1. Why do you think KNN is relevant for your chosen research?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>KNN is highly relevant for our credit card fraud detection research because it excels at identifying
+                local patterns in high-dimensional data, which is critical for detecting fraudulent transactions. The
+                dataset, sourced from Kaggle’s "Credit Card Transactions Fraud Detection Dataset," includes geospatial
+                (e.g., <code>lat</code>, <code>long</code>, <code>merch_lat</code>, <code>merch_long</code>), temporal
+                (e.g., <code>hour</code>, <code>day_of_week</code>), and transactional features (e.g., <code>amt</code>,
+                <code>amount_log</code>). Fraudulent transactions often form clusters, such as multiple fraudulent
+                purchases at a specific merchant location or during unusual hours. KNN’s distance-based approach, using
+                Euclidean distance, effectively captures these clusters by classifying a transaction based on its
+                similarity to nearby transactions in the feature space.
+            </p>
+            <p>Additionally, KNN is non-parametric, meaning it doesn’t assume a specific data distribution, which is
+                suitable for the complex and varied patterns in fraud data. Its simplicity and ability to handle
+                imbalanced datasets (after preprocessing) make it a strong candidate for comparison with other models
+                like Logistic Regression and Decision Trees. In our project, KNN achieved the highest AUC-ROC (0.9235),
+                demonstrating its effectiveness in distinguishing fraud from non-fraud transactions, making it a
+                valuable model for our cloud-based fraud detection system.</p>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>knn_model.py</code>: The <code>FraudKNNModel</code> class uses
+                    <code>KNeighborsClassifier</code> with <code>metric='euclidean'</code> to leverage geospatial and
+                    temporal feature similarities (Lines 38–44).
+                </li>
+                <li><code>preprocessor.py</code>: Features like <code>hour</code>, <code>merch_lat</code>, and
+                    <code>amount_log</code> are engineered to enhance KNN’s ability to detect local fraud patterns
+                    (Lines in <code>feature_engineering</code> method).
+                </li>
+            </ul>
+            <p><strong>Why It’s Relevant:</strong></p>
+            <ul>
+                <li>KNN’s ability to capture local patterns aligns with fraud detection needs (e.g., geospatial
+                    clustering).</li>
+                <li>Its performance (0.9235 AUC-ROC) validates its relevance for the research question: evaluating
+                    machine learning techniques for fraud prediction.</li>
+            </ul>
+        </div>
 
-        <!-- Recommended Models -->
-        <section class="mb-12 fade-in">
-            <h2 class="text-4xl font-bold section-header mb-6">Recommended Models for Assessment</h2>
-            <div class="accordion-header">
-                <h3 class="text-xl font-semibold text-white">Recommended Models (10 Models)</h3>
-            </div>
-            <div class="accordion-content">
-                <p class="text-lg text-gray-300 mb-6">
-                    For your assessment, selecting a diverse set of models covering various machine learning paradigms (e.g., supervised, unsupervised, neural networks, ensemble methods, probabilistic models, and specialized applications) will demonstrate a comprehensive understanding. Below are 10 recommended models based on their prominence, relevance, and variety across the lectures.
-                </p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">Linear Regression</h3>
-                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 2, 5, 6, 8, and 10. A fundamental supervised learning algorithm for regression tasks, widely used for predicting continuous outcomes.</p>
-                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Its simplicity and interpretability make it a strong candidate for discussing regression basics in an assessment.</p>
-                    </div>
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">Logistic Regression</h3>
-                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 2, 3, 5, and 10. A key supervised learning algorithm for binary and multiclass classification tasks.</p>
-                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Its prevalence in classification tasks and mathematical foundation (e.g., maximum likelihood estimation) make it ideal for assessments.</p>
-                    </div>
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">Decision Trees</h3>
-                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 2, 3, 5, 9, and 10. Used for both classification and regression, forming the basis for ensemble methods.</p>
-                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Their intuitive structure and versatility make them a great choice for explaining tree-based methods.</p>
-                    </div>
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">Random Forests</h3>
-                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 3, 5, and 9, with variants like Random Forest Classifier and Random Forest Regression. An ensemble method combining multiple decision trees.</p>
-                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Represents advanced ensemble techniques, offering robustness and high performance, suitable for discussing bagging.</p>
-                    </div>
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">K-Nearest Neighbors (KNN)</h3>
-                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 5, 6, 7, 8, and 9, with both classification and regression variants (K-NN Classifier, K-NN Regression).</p>
-                        <p class="mt-2 text-gray-300"><strong>Why:</strong> A non-parametric, instance-based learning algorithm, ideal for contrasting with parametric models like Linear Regression.</p>
-                    </div>
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">Naive Bayes Classifier</h3>
-                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 2, 3, 6, 7, 9, and 10, with specific variants (Bernoulli, Multinomial, Gaussian Naive Bayes) and applications like spam filtering.</p>
-                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Its probabilistic approach and simplicity make it a strong candidate for discussing classification and Bayes’ theorem.</p>
-                    </div>
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">Support Vector Machine (SVM)</h3>
-                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 2, 3, and 5, with variants like Support Vector Classifier and Support Vector Regression.</p>
-                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Its use of kernel methods and margin maximization offers a sophisticated topic for discussing classification and regression.</p>
-                    </div>
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">Recurrent Neural Network (RNN)</h3>
-                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 3, 4, and 5, with variants like Bi-RNN and Attentional RNN. Designed for sequential data like time series or text.</p>
-                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Represents advanced neural network architectures, showcasing deep learning applications in sequential tasks.</p>
-                    </div>
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">Convolutional Neural Network (CNN)</h3>
-                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lecture 3. Specialized for image and spatial data processing.</p>
-                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Its prominence in computer vision tasks makes it a compelling choice for discussing deep learning in specialized domains.</p>
-                    </div>
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">Transformer Networks</h3>
-                        <p class="mt-2 text-gray-300"><strong>Context:</strong> Appears in Lectures 3 and 4, with specific models like BERT, GPT-2, m3BERT, and BART. Central to modern natural language processing.</p>
-                        <p class="mt-2 text-gray-300"><strong>Why:</strong> Their state-of-the-art performance in NLP tasks makes them ideal for discussing cutting-edge deep learning advancements.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <div class="question">
+            <h3>2. Why did you set those parameters, like n value = 5?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>The KNN parameters were set as follows in <code>knn_model.py</code>: <code>n_neighbors=5</code>,
+                <code>weights='uniform'</code>, <code>algorithm='auto'</code>, <code>metric='euclidean'</code>, and
+                <code>n_jobs=-1</code>. Here’s the rationale for each, focusing on <code>n_neighbors=5</code>:
+            </p>
+            <ul>
+                <li><strong>n_neighbors=5:</strong> We chose <code>n_neighbors=5</code> as a reasonable starting point
+                    because it balances bias and variance. A small <code>n</code> (e.g., 1 or 3) risks overfitting by
+                    relying too heavily on individual neighbors, which could be noisy in a fraud dataset with outliers.
+                    A larger <code>n</code> (e.g., 10 or 20) might oversmooth the decision boundary, missing subtle
+                    fraud patterns. The value 5 is a common default in KNN implementations, as it often provides a good
+                    trade-off, capturing local patterns (e.g., fraud clusters in <code>merch_lat</code> or
+                    <code>hour</code>) without being overly sensitive to noise. While we didn’t perform extensive
+                    hyperparameter tuning in this project, <code>n=5</code> yielded strong results (0.9235 AUC-ROC),
+                    suggesting it was effective for our dataset.
+                </li>
+                <li><strong>weights='uniform':</strong> We used uniform weights, meaning all 5 neighbors contribute
+                    equally to the prediction. This was chosen for simplicity and because it assumes all nearby
+                    transactions are equally relevant, which is reasonable for our balanced dataset (after
+                    undersampling). Distance-based weights (<code>'distance'</code>) could be explored in future work to
+                    prioritize closer neighbors, but uniform weights worked well for initial testing.</li>
+                <li><strong>metric='euclidean':</strong> Euclidean distance was selected because it’s intuitive for
+                    continuous features like <code>amt</code>, <code>lat</code>, <code>long</code>, and engineered
+                    features (<code>amount_log</code>, <code>age</code>). It measures straight-line distance in feature
+                    space, aligning with the geospatial and temporal nature of our data (e.g., fraud occurring at
+                    similar locations or times).</li>
+                <li><strong>algorithm='auto':</strong> We set <code>algorithm='auto'</code> to let scikit-learn choose
+                    the most efficient algorithm (e.g., ball tree or kd-tree) based on the dataset’s size and
+                    dimensionality. This ensures computational efficiency for our preprocessed dataset (15,012 samples
+                    after undersampling).</li>
+                <li><strong>n_jobs=-1:</strong> This uses all available CPU cores for parallel distance computations,
+                    improving training and prediction speed, which is important given KNN’s computational complexity.
+                </li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>knn_model.py</code>, Lines 19–24: Defines the default configuration in
+                    <code>self.config</code>, including <code>n_neighbors=5</code> and other parameters.
+                </li>
+                <li><code>knn_model.py</code>, Lines 38–44: Passes these parameters to <code>KNeighborsClassifier</code>
+                    during training.</li>
+            </ul>
+            <p><strong>Why These Parameters:</strong></p>
+            <ul>
+                <li><code>n_neighbors=5</code> balances bias and variance, suitable for capturing fraud clusters.</li>
+                <li>Other parameters (<code>euclidean</code>, <code>uniform</code>, <code>auto</code>, <code>-1</code>)
+                    prioritize simplicity, compatibility with the dataset’s features, and computational efficiency.</li>
+            </ul>
+        </div>
 
-        <!-- Rationale -->
-        <section class="mb-12 fade-in">
-            <h2 class="text-4xl font-bold section-header mb-6">Rationale for Selection</h2>
-            <div class="accordion-header">
-                <h3 class="text-xl font-semibold text-white">Selection Rationale</h3>
-            </div>
-            <div class="accordion-content">
-                <ul class="list-disc pl-6 text-lg text-gray-300">
-                    <li><strong>Diversity:</strong> The selection covers regression (Linear Regression, Logistic Regression), tree-based methods (Decision Trees, Random Forests), instance-based learning (KNN), probabilistic models (Naive Bayes), kernel-based methods (SVM), and deep learning (RNN, CNN, Transformer Networks), spanning supervised, unsupervised, and specialized paradigms.</li>
-                    <li><strong>Prominence:</strong> These models are frequently mentioned across multiple lectures, indicating their importance in the course material.</li>
-                    <li><strong>Relevance for Assessment:</strong> Each model offers rich discussion points (e.g., mathematical foundations, applications, strengths, and weaknesses) and is well-supported by lecture content, providing ample material for analysis.</li>
-                    <li><strong>Balance:</strong> The list balances foundational models (e.g., Linear Regression, Naive Bayes) with advanced techniques (e.g., RNN, Transformer Networks), demonstrating both breadth and depth.</li>
+        <div class="question">
+            <h3>3. Why did you decide to measure those metrics?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>We measured accuracy, AUC-ROC, precision, recall, F1-score, confusion matrix, and inference time for the
+                KNN model to comprehensively evaluate its performance in fraud detection. Here’s why each metric was
+                chosen:</p>
+            <ul>
+                <li><strong>Accuracy (0.9222):</strong> Accuracy measures the proportion of correctly classified
+                    transactions (fraud and non-fraud). It’s a standard metric for classification tasks and provides a
+                    high-level view of model performance. Since our dataset was balanced via undersampling (equal fraud
+                    and non-fraud samples), accuracy is a reliable indicator of overall performance.</li>
+                <li><strong>AUC-ROC (0.9235):</strong> The Area Under the Receiver Operating Characteristic Curve
+                    (AUC-ROC) measures the model’s ability to distinguish between fraud and non-fraud classes across
+                    various probability thresholds. It’s particularly important for fraud detection, where class
+                    imbalance (originally 0.58% fraud) makes it critical to assess how well the model ranks fraud
+                    transactions higher than non-fraud ones. KNN’s high AUC-ROC (0.9235) indicates strong discriminative
+                    power, making it a key metric for our research.</li>
+                <li><strong>Precision, Recall, F1-Score (for fraud class):</strong>
+                    <ul>
+                        <li><strong>Precision:</strong> Measures the proportion of predicted fraud cases that are
+                            actually fraudulent. High precision minimizes false positives, which is crucial to avoid
+                            flagging legitimate transactions as fraud.</li>
+                        <li><strong>Recall:</strong> Measures the proportion of actual fraud cases correctly identified.
+                            High recall ensures most frauds are caught, which is critical for security.</li>
+                        <li><strong>F1-Score:</strong> The harmonic mean of precision and recall, balancing the
+                            trade-off between false positives and false negatives. These metrics focus on the fraud
+                            class (class 1) because detecting fraud is the primary goal, and imbalances in the original
+                            dataset make these metrics vital.</li>
+                    </ul>
+                </li>
+                <li><strong>Confusion Matrix:</strong> The confusion matrix shows true positives (correctly predicted
+                    frauds), true negatives (correctly predicted non-frauds), false positives, and false negatives. It
+                    provides a detailed breakdown of classification errors, helping us understand where KNN excels or
+                    struggles (e.g., missing frauds or flagging non-frauds).</li>
+                <li><strong>Inference Time:</strong> We measured inference time (in milliseconds) to assess KNN’s
+                    suitability for real-time fraud detection on AWS. Since KNN computes distances to all training
+                    points for each prediction, its inference time is higher than other models, which is a critical
+                    consideration for deployment scalability.</li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>knn_model.py</code>, Lines 78–92: The <code>evaluate</code> method computes these metrics
+                    (<code>accuracy</code>, <code>auc_roc</code>, <code>precision</code>, <code>recall</code>,
+                    <code>f1_score</code>, <code>confusion_matrix</code>, <code>avg_inference_time_ms</code>).
+                </li>
+                <li><code>model_comparison.py</code>, Lines 27–54: Evaluates KNN alongside other models, including these
+                    metrics in the comparison dataframe.</li>
+            </ul>
+            <p><strong>Why These Metrics:</strong></p>
+            <ul>
+                <li>They provide a comprehensive view of KNN’s performance, balancing overall accuracy, fraud detection
+                    ability (AUC-ROC, precision, recall, F1-score), error analysis (confusion matrix), and practical
+                    deployment considerations (inference time).</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>4. Why did you decide to do that kind of preprocessing?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>The preprocessing steps in <code>preprocessor.py</code> were designed to prepare the dataset for KNN’s
+                distance-based classification, addressing the challenges of the fraud detection dataset (e.g., high
+                dimensionality, class imbalance, and outliers). Here’s the rationale for each preprocessing step:</p>
+            <ul>
+                <li><strong>Feature Engineering:</strong>
+                    <ul>
+                        <li><strong>New Features:</strong> We created <code>age</code> (from <code>dob</code>),
+                            <code>hour</code>, <code>day_of_week</code>, <code>amount_log</code>, and
+                            <code>amount_sqrt</code>. These features capture temporal patterns (e.g., fraud at odd
+                            hours) and normalize transaction amounts (e.g., <code>amount_log</code> reduces skewness),
+                            which are critical for KNN’s Euclidean distance calculations.
+                        </li>
+                        <li><strong>Why:</strong> KNN relies on meaningful feature distances, so engineered features
+                            like <code>hour</code> and <code>amount_log</code> help identify fraud clusters (e.g.,
+                            high-amount transactions at midnight).</li>
+                    </ul>
+                </li>
+                <li><strong>Handling Missing Values:</strong> We used <code>SimpleImputer</code> with median strategy
+                    for numerical features (<code>amt</code>, <code>lat</code>, etc.) and most frequent for categorical
+                    features (<code>merchant</code>, <code>category</code>). However, <code>data_metadata.json</code>
+                    confirms no missing values, so this step ensures robustness for future datasets.
+                    <ul>
+                        <li><strong>Why:</strong> KNN requires complete data, as missing values would disrupt distance
+                            calculations.</li>
+                    </ul>
+                </li>
+                <li><strong>Scaling with RobustScaler:</strong> Numerical features (<code>amt</code>, <code>lat</code>,
+                    <code>long</code>, <code>city_pop</code>, <code>age</code>, etc.) were scaled using
+                    <code>RobustScaler</code>, which is robust to outliers by using the median and interquartile range.
+                    <ul>
+                        <li><strong>Why:</strong> KNN is sensitive to feature scales because it computes Euclidean
+                            distances. Unscaled features (e.g., <code>amt</code> in dollars vs. <code>lat</code> in
+                            degrees) would skew distances, giving undue weight to larger-scale features.
+                            <code>RobustScaler</code> ensures all features contribute equally, especially important for
+                            <code>amt</code>, which has outliers.
+                        </li>
+                    </ul>
+                </li>
+                <li><strong>One-Hot Encoding of Categorical Features:</strong> Categorical features
+                    (<code>merchant</code>, <code>category</code>, <code>gender</code>, <code>state</code>,
+                    <code>job</code>) were encoded using <code>OneHotEncoder</code>, creating binary columns for each
+                    category.
+                    <ul>
+                        <li><strong>Why:</strong> KNN requires numerical inputs, and one-hot encoding converts
+                            categorical data into a format suitable for distance calculations, increasing dimensionality
+                            but preserving information.</li>
+                    </ul>
+                </li>
+                <li><strong>Handling Class Imbalance with Undersampling:</strong> We used undersampling
+                    (<code>resample</code> in <code>handle_imbalanced_data</code>) to balance the dataset, reducing it
+                    to 15,012 samples (equal fraud and non-fraud cases) from 1.8 million, as fraud cases were only 0.58%
+                    of the original data.
+                    <ul>
+                        <li><strong>Why:</strong> KNN’s majority voting is biased toward the majority class in
+                            imbalanced datasets. Undersampling ensures equal representation, improving fraud detection
+                            accuracy. However, it discards data, which is a trade-off we accepted for balanced
+                            performance.</li>
+                    </ul>
+                </li>
+                <li><strong>Removing Duplicates:</strong> The <code>remove_duplicates</code> method drops duplicate rows
+                    to ensure data quality.
+                    <ul>
+                        <li><strong>Why:</strong> Duplicates could bias KNN’s neighbor selection, skewing predictions
+                            toward repeated patterns.</li>
+                    </ul>
+                </li>
+                <li><strong>Dropping Unnecessary Columns:</strong> Columns like <code>trans_num</code>,
+                    <code>first</code>, <code>last</code>, <code>street</code>, <code>city</code>, <code>zip</code>,
+                    <code>dob</code>, and <code>trans_date_trans_time</code> were dropped after feature engineering.
+                    <ul>
+                        <li><strong>Why:</strong> These columns were either redundant (e.g., <code>dob</code> after
+                            <code>age</code> creation) or irrelevant for fraud prediction, reducing noise and
+                            dimensionality for KNN.
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>preprocessor.py</code>, <code>preprocess_pipeline</code> method: Orchestrates all steps
+                    (loading, feature engineering, imputation, scaling, encoding, undersampling).</li>
+                <li><code>feature_engineering</code>: Creates <code>age</code>, <code>hour</code>, etc. (Lines in
+                    <code>feature_engineering</code>).
+                </li>
+                <li><code>handle_imbalanced_data</code>: Performs undersampling (Lines in
+                    <code>handle_imbalanced_data</code>).
+                </li>
+                <li><code>scaler = RobustScaler()</code>: Scales numerical features (Line in
+                    <code>preprocess_pipeline</code>).
+                </li>
+                <li><code>encoder = OneHotEncoder()</code>: Encodes categorical features (Line in
+                    <code>preprocess_pipeline</code>).
+                </li>
+            </ul>
+            <p><strong>Why This Preprocessing:</strong></p>
+            <ul>
+                <li>Tailored for KNN’s distance-based approach, ensuring scaled, numerical, and balanced data to
+                    accurately detect fraud clusters while handling outliers and high dimensionality.</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>5. What are your findings?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>Our findings from the KNN model, as implemented in <code>knn_model.py</code> and evaluated in
+                <code>model_comparison.py</code>, are as follows:
+            </p>
+            <ul>
+                <li><strong>High Performance:</strong> KNN achieved an accuracy of 0.9222 and the highest AUC-ROC of
+                    0.9235 among all models (Logistic Regression: 0.8990, Decision Tree: 0.966, Neural Network: not
+                    specified). This indicates KNN is highly effective at distinguishing fraud from non-fraud
+                    transactions, particularly due to its ability to capture local patterns in geospatial
+                    (<code>merch_lat</code>, <code>merch_long</code>) and temporal (<code>hour</code>,
+                    <code>day_of_week</code>) features.
+                </li>
+                <li><strong>Effective for Local Patterns:</strong> KNN’s strength lies in its instance-based learning,
+                    which excels at identifying fraud clusters, such as transactions occurring at specific merchant
+                    locations or during unusual times. The preprocessing steps (e.g., <code>RobustScaler</code>, feature
+                    engineering) enhanced KNN’s ability to leverage these patterns, contributing to its high AUC-ROC.
+                </li>
+                <li><strong>Inference Time Challenge:</strong> KNN’s inference time is higher than other models due to
+                    its need to compute distances to all training points for each prediction (O(n*d) complexity). This
+                    was measured in milliseconds (<code>avg_inference_time_ms</code> in <code>evaluate</code>),
+                    highlighting a scalability limitation for real-time applications on AWS, despite successful
+                    deployment via Elastic Beanstalk.</li>
+                <li><strong>Impact of Preprocessing:</strong> The undersampling approach balanced the dataset (15,012
+                    samples), improving KNN’s fraud detection but at the cost of discarding significant data. This
+                    trade-off likely contributed to the high AUC-ROC but may have missed rare fraud patterns in the
+                    discarded data. <code>RobustScaler</code> ensured robust distance calculations, critical for KNN’s
+                    performance.</li>
+                <li><strong>Lack of Feature Importance:</strong> Unlike Decision Tree or Logistic Regression, KNN
+                    doesn’t natively provide feature importance. The <code>plot_results</code> method focused on
+                    confusion matrix, ROC curve, and prediction distribution, which showed clear separation between
+                    fraud and non-fraud probabilities but didn’t quantify feature contributions. Future work could use
+                    permutation importance to address this.</li>
+                <li><strong>Cloud Deployment:</strong> KNN was successfully integrated into a Django prototype on AWS
+                    EC2 via Elastic Beanstalk, demonstrating its practical applicability for real-time fraud detection,
+                    though its inference time suggests optimization is needed for large-scale deployment.</li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>knn_model.py</code>, Lines 78–95: Computes metrics in <code>evaluate</code> (accuracy,
+                    AUC-ROC, etc.).</li>
+                <li><code>knn_model.py</code>, Lines 97–139: Generates visualizations in <code>plot_results</code>
+                    (confusion matrix, ROC curve, prediction distribution).</li>
+                <li><code>model_comparison.py</code>: Compares KNN’s metrics with other models, confirming highest
+                    AUC-ROC (Lines 27–54, 68–103).</li>
+                <li><code>main.py</code>: Integrates KNN into the pipeline and AWS deployment (Lines ~96–108).</li>
+            </ul>
+            <p><strong>Key Findings:</strong></p>
+            <ul>
+                <li>KNN is highly effective for fraud detection (0.9235 AUC-ROC, 0.9222 accuracy) due to its ability to
+                    capture local patterns.</li>
+                <li>Preprocessing (undersampling, <code>RobustScaler</code>) was critical to its success but limited
+                    data volume.</li>
+                <li>High inference time is a drawback for scalability, and lack of feature importance limits
+                    interpretability.</li>
+                <li>Successful cloud deployment shows practical potential, but optimization is needed.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="decision-tree">
+        <h2>Decision Tree Model</h2>
+
+        <div class="question">
+            <h3>1. Why do you think the Decision Tree is relevant for your chosen research?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>The Decision Tree model is highly relevant for our credit card fraud detection research because it is
+                interpretable, handles both numerical and categorical features effectively, and can capture non-linear
+                relationships in the dataset. Fraud detection requires identifying complex patterns, such as specific
+                combinations of transaction amounts (<code>amt</code>), merchant locations (<code>merch_lat</code>,
+                <code>merch_long</code>), or times (<code>hour</code>) that indicate fraud. Decision Trees split the
+                feature space into regions based on feature thresholds, making them well-suited for detecting such
+                patterns without assuming a linear relationship, unlike Logistic Regression. Their interpretability is
+                valuable for understanding which features (e.g., <code>amount_log</code>, <code>category</code>) drive
+                fraud predictions, aiding in explaining results to stakeholders. In our project, the Decision Tree
+                achieved a competitive AUC-ROC of 0.966, demonstrating its effectiveness in distinguishing fraud from
+                non-fraud transactions, making it a strong candidate for our cloud-based fraud detection system.
+            </p>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>decision_tree_model.py</code>: The <code>FraudDecisionTreeModel</code> class uses
+                    <code>DecisionTreeClassifier</code> to build a tree based on feature splits (Lines 38–44).
+                </li>
+                <li><code>preprocessor.py</code>: Features like <code>amount_log</code> and <code>category</code>
+                    (one-hot encoded) are used to create decision rules (Lines in <code>feature_engineering</code>,
+                    <code>preprocess_pipeline</code>).
+                </li>
+                <li><code>model_comparison.py</code>: Shows Decision Tree’s AUC-ROC of 0.966 (Lines 27–54).</li>
+            </ul>
+            <p><strong>Why It’s Relevant:</strong></p>
+            <ul>
+                <li>Decision Trees capture non-linear fraud patterns and provide interpretable feature importance.</li>
+                <li>High AUC-ROC (0.966) validates its suitability for fraud detection.</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>2. Why did you set those parameters, like max_depth or others?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>The Decision Tree parameters in <code>decision_tree_model.py</code> were set as follows:
+                <code>max_depth=None</code>, <code>min_samples_split=2</code>, <code>min_samples_leaf=1</code>,
+                <code>criterion='gini'</code>, <code>random_state=42</code>. Here’s the rationale for each:
+            </p>
+            <ul>
+                <li><strong>max_depth=None:</strong> We allowed the tree to grow until all leaves are pure or meet other
+                    stopping criteria. This maximizes the model’s ability to capture complex fraud patterns (e.g.,
+                    specific <code>hour</code> and <code>amt</code> combinations) without restricting depth. While this
+                    risks overfitting, the balanced dataset (15,012 samples) and evaluation metrics (0.966 AUC-ROC)
+                    suggest it was effective. Tuning <code>max_depth</code> (e.g., 5, 10) could be explored to reduce
+                    complexity.</li>
+                <li><strong>min_samples_split=2:</strong> This is the minimum number of samples required to split a
+                    node. The default value of 2 allows the tree to split as long as there are at least two samples,
+                    maximizing granularity in decision rules. This is suitable for fraud detection, where specific
+                    splits (e.g., <code>amt > 1000</code>) may isolate fraud cases.</li>
+                <li><strong>min_samples_leaf=1:</strong> This allows leaves to contain a single sample, enabling
+                    fine-grained splits to capture rare fraud patterns. A higher value could prevent overfitting but
+                    might miss subtle patterns in the balanced dataset.</li>
+                <li><strong>criterion='gini':</strong> We used the Gini impurity criterion to measure the quality of
+                    splits. Gini is computationally efficient and effective for binary classification (fraud vs.
+                    non-fraud), as it minimizes the probability of misclassification at each node.</li>
+                <li><strong>random_state=42:</strong> This ensures reproducibility of the tree structure, which is
+                    important for consistent evaluation and comparison with other models.</li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>decision_tree_model.py</code>, Lines 19–24: Defines the default configuration in
+                    <code>self.config</code>.
+                </li>
+                <li><code>decision_tree_model.py</code>, Lines 38–44: Passes parameters to
+                    <code>DecisionTreeClassifier</code>.
+                </li>
+            </ul>
+            <p><strong>Why These Parameters:</strong></p>
+            <ul>
+                <li>They allow a flexible, deep tree to capture complex fraud patterns while maintaining reproducibility
+                    and computational efficiency.</li>
+                <li>The high AUC-ROC (0.966) supports the effectiveness of these settings.</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>3. Why did you decide to measure those metrics?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>We measured accuracy, AUC-ROC, precision, recall, F1-score, confusion matrix, and inference time for the
+                Decision Tree to evaluate its performance comprehensively:</p>
+            <ul>
+                <li><strong>Accuracy:</strong> Measures overall correct predictions, suitable for the balanced dataset
+                    (15,012 samples). It provides a baseline for model performance.</li>
+                <li><strong>AUC-ROC (0.966):</strong> Assesses the model’s ability to rank fraud transactions higher
+                    than non-fraud ones, critical for imbalanced fraud detection (originally 0.58% fraud). The high
+                    AUC-ROC indicates excellent discriminative power.</li>
+                <li><strong>Precision, Recall, F1-Score (for fraud class):</strong> Precision minimizes false positives
+                    (avoiding flagging legitimate transactions), recall ensures most frauds are caught, and F1-score
+                    balances the two, focusing on the fraud class due to its importance.</li>
+                <li><strong>Confusion Matrix:</strong> Shows true positives, true negatives, false positives, and false
+                    negatives, revealing specific errors (e.g., missed frauds).</li>
+                <li><strong>Inference Time:</strong> Measures prediction speed, critical for real-time AWS deployment.
+                    Decision Trees are fast at inference (single path traversal), making this a key metric for
+                    scalability.</li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>decision_tree_model.py</code>, Lines 78–92: Computes metrics in <code>evaluate</code>.</li>
+                <li><code>model_comparison.py</code>, Lines 27–54: Includes Decision Tree’s metrics in comparisons,
+                    confirming AUC-ROC of 0.966.</li>
+            </ul>
+            <p><strong>Why These Metrics:</strong></p>
+            <ul>
+                <li>They balance overall performance (accuracy), fraud detection ability (AUC-ROC, precision, recall,
+                    F1-score), error analysis (confusion matrix), and deployment feasibility (inference time).</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>4. Why did you decide to do that kind of preprocessing?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>The preprocessing in <code>preprocessor.py</code> was tailored to support Decision Tree’s ability to
+                handle both numerical and categorical features and address dataset challenges:</p>
+            <ul>
+                <li><strong>Feature Engineering:</strong> Created <code>age</code>, <code>hour</code>,
+                    <code>day_of_week</code>, <code>amount_log</code>, <code>amount_sqrt</code> to capture temporal and
+                    transactional patterns. Decision Trees benefit from these features, as they can split on thresholds
+                    (e.g., <code>amt > 500</code>) to isolate fraud.
+                </li>
+                <li><strong>Handling Missing Values:</strong> Used median imputation for numerical features and most
+                    frequent for categorical features, though no missing values exist (<code>data_metadata.json</code>).
+                    This ensures robustness.</li>
+                <li><strong>Scaling with RobustScaler:</strong> While Decision Trees are not sensitive to feature scales
+                    (they split based on thresholds), scaling was applied for consistency across models (e.g., for KNN
+                    and Neural Network).</li>
+                <li><strong>One-Hot Encoding:</strong> Encoded categorical features (<code>merchant</code>,
+                    <code>category</code>, <code>gender</code>) into binary columns. Decision Trees handle categorical
+                    data well, and one-hot encoding allows splits on specific categories (e.g.,
+                    <code>category=gas_transport</code>).
+                </li>
+                <li><strong>Undersampling:</strong> Reduced the dataset to 15,012 balanced samples to address the
+                    original 0.58% fraud imbalance. This prevents the tree from favoring the majority class, improving
+                    fraud detection.</li>
+                <li><strong>Dropping Unnecessary Columns:</strong> Removed <code>trans_num</code>, <code>first</code>,
+                    <code>last</code>, etc., to reduce noise and focus on predictive features.
+                </li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>preprocessor.py</code>, <code>preprocess_pipeline</code>: Handles all preprocessing steps.
+                </li>
+                <li><code>feature_engineering</code>: Creates <code>age</code>, <code>hour</code>, etc.</li>
+                <li><code>handle_imbalanced_data</code>: Performs undersampling.</li>
+            </ul>
+            <p><strong>Why This Preprocessing:</strong></p>
+            <ul>
+                <li>Enhances Decision Tree’s ability to create meaningful splits on engineered and categorical features
+                    while addressing class imbalance for accurate fraud detection.</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>5. What are your findings?</h3>
+            <p><strong>Answer:</strong></p>
+            <ul>
+                <li><strong>High Performance:</strong> Decision Tree achieved an AUC-ROC of 0.966, competitive with KNN
+                    (0.9235) and superior to Logistic Regression (0.8990), indicating strong fraud detection capability.
+                </li>
+                <li><strong>Interpretability:</strong> The <code>plot_feature_importance</code> method (Lines 104–123 in
+                    <code>decision_tree_model.py</code>) shows which features (e.g., <code>amt</code>,
+                    <code>category</code>) drive splits, providing insights into fraud patterns (e.g., high amounts or
+                    specific categories).
+                </li>
+                <li><strong>Fast Inference:</strong> Decision Trees have low inference time (single path traversal),
+                    making them suitable for real-time AWS deployment, unlike KNN’s higher inference time.</li>
+                <li><strong>Preprocessing Impact:</strong> Undersampling improved fraud detection but discarded data,
+                    potentially missing rare patterns. One-hot encoding enabled effective categorical splits.</li>
+                <li><strong>Overfitting Risk:</strong> With <code>max_depth=None</code>, the tree may overfit, but the
+                    high AUC-ROC suggests good generalization on the test set.</li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>decision_tree_model.py</code>, Lines 78–92: Computes metrics.</li>
+                <li><code>decision_tree_model.py</code>, Lines 104–123: Plots feature importance.</li>
+                <li><code>model_comparison.py</code>: Confirms AUC-ROC of 0.966.</li>
+                <li><code>main.py</code>: Integrates Decision Tree into the pipeline and AWS deployment.</li>
+            </ul>
+            <p><strong>Key Findings:</strong></p>
+            <ul>
+                <li>Decision Tree excels in fraud detection (0.966 AUC-ROC) with interpretable splits.</li>
+                <li>Fast inference supports scalability, but overfitting is a concern without depth constraints.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="logistic-regression">
+        <h2>Logistic Regression Model</h2>
+
+        <div class="question">
+            <h3>1. Why do you think Logistic Regression is relevant for your chosen research?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>Logistic Regression is relevant for our fraud detection research because it provides a robust,
+                interpretable, and computationally efficient baseline model for binary classification (fraud vs.
+                non-fraud). It models the probability of a transaction being fraudulent based on a linear combination of
+                features, making it suitable for understanding linear relationships between features (e.g.,
+                <code>amt</code>, <code>hour</code>) and fraud likelihood. Its interpretability, via feature
+                coefficients, helps identify which features (e.g., <code>amount_log</code>) are most predictive of
+                fraud, useful for stakeholder communication. Despite its assumption of linearity, Logistic Regression
+                performed well in our project (AUC-ROC of 0.8990), making it a valuable comparison point against
+                non-linear models like KNN and Decision Tree in our cloud-based system.
+            </p>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>logistic_regression_model.py</code>: Uses <code>LogisticRegression</code> to model
+                    probabilities (Lines 38–44).</li>
+                <li><code>model_comparison.py</code>: Shows AUC-ROC of 0.8990 (Lines 27–54).</li>
+            </ul>
+            <p><strong>Why It’s Relevant:</strong></p>
+            <ul>
+                <li>Provides an interpretable baseline for fraud detection.</li>
+                <li>AUC-ROC of 0.8990 validates its utility, though less effective than KNN or Decision Tree for
+                    non-linear patterns.</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>2. Why did you set those parameters, like C or solver?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>The Logistic Regression parameters in <code>logistic_regression_model.py</code> were set as:
+                <code>C=1.0</code>, <code>penalty='l2'</code>, <code>solver='lbfgs'</code>, <code>max_iter=100</code>,
+                <code>random_state=42</code>. Rationale:
+            </p>
+            <ul>
+                <li><strong>C=1.0:</strong> This is the inverse of regularization strength. A value of 1.0 provides
+                    moderate L2 regularization, balancing model complexity and overfitting prevention. It was chosen as
+                    a default to ensure stable convergence without overly penalizing coefficients.</li>
+                <li><strong>penalty='l2':</strong> L2 regularization (Ridge) was used to shrink feature coefficients,
+                    reducing overfitting risk on the high-dimensional dataset (after one-hot encoding). L2 is compatible
+                    with the <code>lbfgs</code> solver and suitable for our balanced dataset.</li>
+                <li><strong>solver='lbfgs':</strong> The Limited-memory Broyden–Fletcher–Goldfarb–Shanno solver is
+                    efficient for small-to-medium datasets (15,012 samples post-undersampling) and supports L2
+                    regularization. It was chosen for its speed and stability.</li>
+                <li><strong>max_iter=100:</strong> This sets the maximum number of iterations for convergence. 100
+                    iterations were sufficient for our dataset, ensuring the model converges without excessive
+                    computation.</li>
+                <li><strong>random_state=42:</strong> Ensures reproducibility of results for consistent evaluation.</li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>logistic_regression_model.py</code>, Lines 19–24: Defines the configuration.</li>
+                <li><code>logistic_regression_model.py</code>, Lines 38–44: Initializes <code>LogisticRegression</code>.
+                </li>
+            </ul>
+            <p><strong>Why These Parameters:</strong></p>
+            <ul>
+                <li>They provide a balanced, efficient model suitable for the dataset’s size and dimensionality, with
+                    stable convergence and reproducibility.</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>3. Why did you decide to measure those metrics?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>We measured accuracy, AUC-ROC (0.8990), precision, recall, F1-score, confusion matrix, and inference time
+                to evaluate Logistic Regression comprehensively:</p>
+            <ul>
+                <li><strong>Accuracy:</strong> Assesses overall correct predictions, reliable due to the balanced
+                    dataset.</li>
+                <li><strong>AUC-ROC:</strong> Measures the model’s ability to rank fraud transactions, critical for
+                    fraud detection. The 0.8990 AUC-ROC indicates good but not top performance.</li>
+                <li><strong>Precision, Recall, F1-Score:</strong> Focus on the fraud class to minimize false positives
+                    (precision) and ensure fraud detection (recall). F1-score balances these priorities.</li>
+                <li><strong>Confusion Matrix:</strong> Details classification errors, useful for analyzing false
+                    positives/negatives.</li>
+                <li><strong>Inference Time:</strong> Logistic Regression’s fast inference (linear computation) is
+                    critical for real-time AWS deployment.</li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>logistic_regression_model.py</code>, Lines 78–92: Computes metrics in <code>evaluate</code>.
+                </li>
+                <li><code>model_comparison.py</code>: Includes Logistic Regression’s metrics (Lines 27–54).</li>
+            </ul>
+            <p><strong>Why These Metrics:</strong></p>
+            <ul>
+                <li>They assess overall performance, fraud detection ability, error types, and deployment feasibility,
+                    aligning with the project’s goals.</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>4. Why did you decide to do that kind of preprocessing?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>The preprocessing in <code>preprocessor.py</code> was tailored to support Logistic Regression’s
+                requirements for numerical, scaled features and to address dataset challenges:</p>
+            <ul>
+                <li><strong>Feature Engineering:</strong> Created <code>age</code>, <code>hour</code>,
+                    <code>day_of_week</code>, <code>amount_log</code>, <code>amount_sqrt</code> to capture predictive
+                    patterns. Logistic Regression benefits from these features to model linear relationships (e.g.,
+                    higher <code>amt</code> increases fraud probability).
+                </li>
+                <li><strong>Handling Missing Values:</strong> Median imputation for numerical features and most frequent
+                    for categorical features ensure robustness, though no missing values exist.</li>
+                <li><strong>Scaling with RobustScaler:</strong> Logistic Regression is sensitive to feature scales, as
+                    unscaled features can distort coefficient magnitudes. <code>RobustScaler</code> handles outliers in
+                    <code>amt</code>, ensuring stable coefficients.
+                </li>
+                <li><strong>One-Hot Encoding:</strong> Converts categorical features (<code>merchant</code>,
+                    <code>category</code>) into binary columns, allowing Logistic Regression to model them as
+                    independent predictors.
+                </li>
+                <li><strong>Undersampling:</strong> Balances the dataset (15,012 samples) to prevent bias toward the
+                    non-fraud class (originally 0.58% fraud), improving fraud detection.</li>
+                <li><strong>Dropping Unnecessary Columns:</strong> Removes irrelevant features (<code>trans_num</code>,
+                    <code>first</code>, etc.) to reduce noise and model complexity.
+                </li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>preprocessor.py</code>, <code>preprocess_pipeline</code>: Handles all preprocessing steps.
+                </li>
+                <li><code>feature_engineering</code>, <code>handle_imbalanced_data</code>, <code>scaler</code>,
+                    <code>encoder</code>: Specific preprocessing methods.
+                </li>
+            </ul>
+            <p><strong>Why This Preprocessing:</strong></p>
+            <ul>
+                <li>Ensures numerical, scaled features for Logistic Regression’s linear modeling, with undersampling
+                    addressing class imbalance.</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>5. What are your findings?</h3>
+            <p><strong>Answer:</strong></p>
+            <ul>
+                <li><strong>Moderate Performance:</strong> Logistic Regression achieved an AUC-ROC of 0.8990, lower than
+                    KNN (0.9235) and Decision Tree (0.966), indicating it struggles with non-linear fraud patterns.</li>
+                <li><strong>Interpretability:</strong> The <code>plot_feature_importance</code> method (Lines 104–123 in
+                    <code>logistic_regression_model.py</code>) shows feature coefficients, highlighting key predictors
+                    like <code>amt</code> and <code>category</code>.
+                </li>
+                <li><strong>Fast Inference:</strong> Logistic Regression has low inference time, ideal for real-time AWS
+                    deployment.</li>
+                <li><strong>Preprocessing Impact:</strong> Scaling and undersampling were critical for stable
+                    coefficients and balanced performance, but the linear model may miss complex patterns.</li>
+                <li><strong>Baseline Role:</strong> Serves as a robust baseline, but non-linear models outperformed it
+                    due to fraud’s complexity.</li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>logistic_regression_model.py</code>, Lines 78–92: Computes metrics.</li>
+                <li><code>logistic_regression_model.py</code>, Lines 104–123: Plots feature importance.</li>
+                <li><code>model_comparison.py</code>: Confirms AUC-ROC of 0.8990.</li>
+                <li><code>main.py</code>: Integrates Logistic Regression into the pipeline and AWS deployment.</li>
+            </ul>
+            <p><strong>Key Findings:</strong></p>
+            <ul>
+                <li>Logistic Regression is interpretable and fast but less effective (0.8990 AUC-ROC) for non-linear
+                    fraud patterns.</li>
+                <li>Suitable as a baseline, with preprocessing ensuring stable performance.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="neural-network">
+        <h2>Neural Network Model</h2>
+
+        <div class="question">
+            <h3>1. Why do you think the Neural Network is relevant for your chosen research?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>The Neural Network is relevant for our fraud detection research because it can model complex, non-linear
+                relationships in high-dimensional data, which is critical for detecting intricate fraud patterns. The
+                dataset’s diverse features (geospatial, temporal, transactional) and class imbalance (0.58% fraud) make
+                Neural Networks suitable, as they can learn hierarchical feature representations (e.g., combining
+                <code>amt</code>, <code>hour</code>, <code>category</code>) to identify subtle fraud signals. Their
+                flexibility allows them to outperform linear models like Logistic Regression in capturing
+                non-linearities. In our project, the Neural Network was part of the comparative analysis, deployed on
+                AWS for scalability, making it relevant for real-time fraud detection systems.
+            </p>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>neural_network_model.py</code>: Uses <code>MLPClassifier</code> to build a multi-layer
+                    perceptron (Lines 38–44).</li>
+                <li><code>preprocessor.py</code>: Provides high-dimensional, scaled features for the Neural Network
+                    (Lines in <code>preprocess_pipeline</code>).</li>
+            </ul>
+            <p><strong>Why It’s Relevant:</strong></p>
+            <ul>
+                <li>Captures complex fraud patterns through non-linear learning.</li>
+                <li>Suitable for high-dimensional data and scalable deployment.</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>2. Why did you set those parameters, like hidden_layer_sizes or learning_rate?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>The Neural Network parameters in <code>neural_network_model.py</code> were set as:
+                <code>hidden_layer_sizes=(100, 50)</code>, <code>activation='relu'</code>, <code>solver='adam'</code>,
+                <code>learning_rate_init=0.001</code>, <code>max_iter=200</code>, <code>random_state=42</code>.
+                Rationale:
+            </p>
+            <ul>
+                <li><strong>hidden_layer_sizes=(100, 50):</strong> The network has two hidden layers with 100 and 50
+                    neurons, respectively, providing sufficient capacity to model complex fraud patterns without
+                    excessive computation. This architecture balances depth and efficiency for the dataset (15,012
+                    samples post-undersampling).</li>
+                <li><strong>activation='relu':</strong> The Rectified Linear Unit (ReLU) activation function introduces
+                    non-linearity, enabling the network to learn complex patterns. ReLU is computationally efficient and
+                    helps avoid vanishing gradients.</li>
+                <li><strong>solver='adam':</strong> The Adam optimizer is robust and efficient for gradient-based
+                    optimization, suitable for the high-dimensional, balanced dataset.</li>
+                <li><strong>learning_rate_init=0.001:</strong> A small learning rate ensures stable convergence,
+                    preventing overshooting during training.</li>
+                <li><strong>max_iter=200:</strong> Allows sufficient iterations for convergence on the dataset,
+                    balancing training time and performance.</li>
+                <li><strong>random_state=42:</strong> Ensures reproducibility of results.</li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>neural_network_model.py</code>, Lines 19–24: Defines the configuration.</li>
+                <li><code>neural_network_model.py</code>, Lines 38–44: Initializes <code>MLPClassifier</code>.</li>
+            </ul>
+            <p><strong>Why These Parameters:</strong></p>
+            <ul>
+                <li>They provide a flexible, efficient Neural Network capable of modeling non-linear fraud patterns with
+                    stable training.</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>3. Why did you decide to measure those metrics?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>We measured accuracy, AUC-ROC, precision, recall, F1-score, confusion matrix, and inference time for the
+                Neural Network to evaluate its performance:</p>
+            <ul>
+                <li><strong>Accuracy:</strong> Assesses overall correct predictions, reliable for the balanced dataset.
+                </li>
+                <li><strong>AUC-ROC:</strong> Measures the ability to rank fraud transactions, critical for fraud
+                    detection. The Neural Network’s AUC-ROC was not specified but compared against KNN (0.9235) and
+                    Decision Tree (0.966).</li>
+                <li><strong>Precision, Recall, F1-Score:</strong> Focus on fraud class to ensure high detection rate
+                    (recall) and low false positives (precision), with F1-score balancing the two.</li>
+                <li><strong>Confusion Matrix:</strong> Details classification errors, useful for analyzing fraud
+                    detection performance.</li>
+                <li><strong>Inference Time:</strong> Neural Networks have moderate inference time, important for
+                    real-time AWS deployment.</li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>neural_network_model.py</code>, Lines 78–92: Computes metrics in <code>evaluate</code>.</li>
+                <li><code>model_comparison.py</code>: Includes Neural Network’s metrics in comparisons (Lines 27–54).
+                </li>
+            </ul>
+            <p><strong>Why These Metrics:</strong></p>
+            <ul>
+                <li>They assess fraud detection ability, error types, and deployment feasibility, aligning with the
+                    project’s goals.</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>4. Why did you decide to do that kind of preprocessing?</h3>
+            <p><strong>Answer:</strong></p>
+            <p>The preprocessing in <code>preprocessor.py</code> was designed to support Neural Network’s requirements
+                for numerical, scaled features:</p>
+            <ul>
+                <li><strong>Feature Engineering:</strong> Created <code>age</code>, <code>hour</code>,
+                    <code>amount_log</code>, etc., to capture predictive patterns. Neural Networks benefit from these
+                    features to learn complex interactions.
+                </li>
+                <li><strong>Handling Missing Values:</strong> Median and most frequent imputation ensure robustness,
+                    though no missing values exist.</li>
+                <li><strong>Scaling with RobustScaler:</strong> Neural Networks are sensitive to feature scales, as
+                    unscaled features can destabilize gradient-based training. <code>RobustScaler</code> handles
+                    outliers in <code>amt</code>.</li>
+                <li><strong>One-Hot Encoding:</strong> Converts categorical features into binary columns, allowing
+                    Neural Networks to process them as numerical inputs.</li>
+                <li><strong>Undersampling:</strong> Balances the dataset to prevent bias toward non-fraud class,
+                    improving fraud detection.</li>
+                <li><strong>Dropping Unnecessary Columns:</strong> Removes irrelevant features to reduce model
+                    complexity.</li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>preprocessor.py</code>, <code>preprocess_pipeline</code>: Handles all preprocessing steps.
+                </li>
+                <li><code>feature_engineering</code>, <code>handle_imbalanced_data</code>, <code>scaler</code>,
+                    <code>encoder</code>: Specific preprocessing methods.
+                </li>
+            </ul>
+            <p><strong>Why This Preprocessing:</strong></p>
+            <ul>
+                <li>Ensures numerical, scaled, and balanced data for stable Neural Network training and effective fraud
+                    detection.</li>
+            </ul>
+        </div>
+
+        <div class="question">
+            <h3>5. What are your findings?</h3>
+            <p><strong>Answer:</strong></p>
+            <ul>
+                <li><strong>Performance:</strong> The Neural Network’s AUC-ROC was not specified, but it was compared
+                    against KNN (0.9235) and Decision Tree (0.966), suggesting competitive performance for non-linear
+                    patterns.</li>
+                <li><strong>Complex Pattern Detection:</strong> The Neural Network excels at learning hierarchical
+                    feature representations, capturing complex fraud patterns (e.g., interactions between
+                    <code>amt</code>, <code>hour</code>, <code>category</code>).
+                </li>
+                <li><strong>Inference Time:</strong> Moderate inference time due to multiple layers, less efficient than
+                    Decision Tree but suitable for AWS deployment.</li>
+                <li><strong>Preprocessing Impact:</strong> Scaling and undersampling were critical for stable training
+                    and balanced performance, but undersampling discarded data.</li>
+                <li><strong>Permutation Importance:</strong> The <code>compute_permutation_importance</code> method
+                    (Lines 125–141 in <code>neural_network_model.py</code>) identifies key features, enhancing
+                    interpretability.</li>
+            </ul>
+            <p><strong>Code Reference:</strong></p>
+            <ul>
+                <li><code>neural_network_model.py</code>, Lines 78–92: Computes metrics.</li>
+                <li><code>neural_network_model.py</code>, Lines 125–141: Computes permutation importance.</li>
+                <li><code>model_comparison.py</code>: Includes Neural Network’s metrics.</li>
+                <li><code>main.py</code>: Integrates Neural Network into the pipeline and AWS deployment.</li>
+            </ul>
+            <p><strong>Key Findings:</strong></p>
+            <ul>
+                <li>Neural Network captures complex fraud patterns but has moderate inference time.</li>
+                <li>Preprocessing ensures stable training, with permutation importance providing insights.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="additional-notes" class="additional-notes">
+        <h2>Additional Notes for Teacher Questions</h2>
+        <ul>
+            <li><strong>Anticipating Follow-Ups:</strong>
+                <ul>
+                    <li><strong>Why not tune <code>n_neighbors</code>?</strong>: You could explain that <code>n=5</code>
+                        was a practical default yielding strong results, but <code>GridSearchCV</code> could be added
+                        for tuning (as in <code>decision_tree_model.py</code>).</li>
+                    <li><strong>Why not SMOTE instead of undersampling?</strong>: Undersampling was chosen for
+                        simplicity and to ensure balance, but SMOTE could retain more data and is a future enhancement.
+                    </li>
+                    <li><strong>How does KNN compare to others?</strong>: Highlight KNN’s superior AUC-ROC (0.9235 vs.
+                        0.8990 for Logistic Regression) but note Decision Tree’s competitive performance (0.966 AUC-ROC)
+                        and faster inference.</li>
                 </ul>
-            </div>
-        </section>
+            </li>
+            <li><strong>Code Context:</strong>
+                <ul>
+                    <li>All answers are grounded in <code>knn_model.py</code> (your core contribution) and its
+                        integration with <code>preprocessor.py</code>, <code>main.py</code>, and
+                        <code>model_comparison.py</code>.
+                    </li>
+                    <li>The dataset (<code>data_metadata.json</code>) supports your preprocessing choices, as it has no
+                        missing values and diverse features suited for KNN.</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
 
-        <!-- Data Cleaning Recommendations -->
-        <section class="mb-12 fade-in">
-            <h2 class="text-4xl font-bold section-header mb-6">Data Cleaning Recommendations</h2>
-            <div class="accordion-header">
-                <h3 class="text-xl font-semibold text-white">Cleaning Steps</h3>
-            </div>
-            <div class="accordion-content">
-                <p class="text-lg text-gray-300 mb-6">
-                    To prepare the dataset for analysis in alignment with the research question, which focuses on geospatial discrepancies, temporal patterns, and demographic/transactional variables for fraud prediction, a systematic cleaning process is essential. This ensures data integrity, reduces noise, and facilitates effective feature engineering and modeling. The dataset, fraudTrain.csv from the Kaggle Credit Card Transactions Fraud Detection collection, contains approximately 1,296,675 rows and 23 columns based on available summaries. It is simulated, with no reported missing values, but exhibits severe class imbalance (approximately 99.42% non-fraudulent and 0.58% fraudulent transactions). Potential issues include duplicates, outliers in numerical fields (e.g., transaction amounts), and the need for type conversions and encoding. Below is a structured sequence of cleaning steps, which can be implemented using Python libraries such as Pandas and NumPy.
-                </p>
-                <ol class="list-decimal pl-6 text-lg text-gray-300">
-                    <li><strong>Load the Dataset:</strong> Import the CSV file into a DataFrame. Verify the structure by inspecting the first few rows, data types, and summary statistics to confirm alignment with the provided column names.</li>
-                    <li><strong>Handle Missing Values:</strong> Although summaries indicate no missing values in this simulated dataset, perform a check (e.g., using <code>df.isnull().sum()</code>) to confirm. If any are found unexpectedly, impute numerical fields with medians and categorical fields with modes, or remove affected rows if minimal.</li>
-                    <li><strong>Remove Duplicates:</strong> Identify and eliminate duplicate rows based on all columns or key identifiers like <code>trans_num</code> (e.g., using <code>df.drop_duplicates()</code>). Duplicates, if present, could skew fraud patterns.</li>
-                    <li><strong>Convert Data Types:</strong> Parse <code>trans_date_trans_time</code> to datetime format for temporal feature extraction. Convert <code>dob</code> to datetime if not already. Ensure numerical columns (e.g., <code>amt</code>, <code>lat</code>, <code>long</code>) are floats or integers as appropriate.</li>
-                    <li><strong>Address Outliers:</strong> Examine numerical columns such as <code>amt</code>, <code>city_pop</code>, and potential derived features (e.g., geospatial distances) for anomalies using box plots or z-scores. Cap extreme values at the 99th percentile or apply logarithmic transformations to mitigate their impact on model performance, particularly since fraud may correlate with unusual amounts.</li>
-                    <li><strong>Encode Categorical Variables:</strong> Convert non-numerical columns (e.g., <code>merchant</code>, <code>category</code>, <code>gender</code>, <code>state</code>, <code>job</code>) to numerical formats. Use one-hot encoding for low-cardinality fields like <code>gender</code> and <code>category</code>, and label encoding or frequency encoding for high-cardinality ones like <code>merchant</code> and <code>job</code> to avoid dimensionality issues.</li>
-                    <li><strong>Drop Irrelevant or Redundant Columns:</strong> Remove sensitive or low-utility fields such as <code>first</code>, <code>last</code>, <code>street</code>, <code>trans_num</code>, and <code>unix_time</code> (redundant with <code>trans_date_trans_time</code>) to reduce noise and protect privacy, unless needed for grouping (e.g., by <code>cc_num</code> for user-level analysis).</li>
-                    <li><strong>Initial Feature Engineering for Cleaning:</strong> Calculate geospatial proximity (e.g., Haversine distance between (<code>lat</code>, <code>long</code>) and (<code>merch_lat</code>, <code>merch_long</code>)) and extract temporal features (e.g., hour, day of week from <code>trans_date_trans_time</code>). Flag any invalid distances (e.g., negative or implausible values) for removal.</li>
-                    <li><strong>Check for Inconsistencies:</strong> Validate logical constraints, such as ensuring <code>merch_lat</code> and <code>merch_long</code> fall within realistic geographic ranges, and cross-check <code>zip</code> with <code>city</code> and <code>state</code> for mismatches if external validation is feasible.</li>
-                    <li><strong>Save Cleaned Dataset:</strong> Export the processed DataFrame to a new CSV for reproducibility and further use in modeling.</li>
-                </ol>
-                <h3 class="text-2xl font-semibold text-blue-400 mt-6 mb-4">Data Cleaning Steps Implementation</h3>
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Step 1: Load the Dataset</h4>
-                        <pre><code>import pandas as pd
-import numpy as np
-from math import radians, sin, cos, sqrt, atan2
-
-df = pd.read_csv('fraudTrain.csv')
-print(df.head())
-print(df.info())
-print(df.describe())
-print(df.shape)
-</code></pre>
-                    </div>
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Step 2: Handle Missing Values (Skipped, but Verified)</h4>
-                        <pre><code>print(df.isnull().sum())
-</code></pre>
-                    </div>
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Step 3: Remove Duplicates</h4>
-                        <pre><code>print(df.duplicated().sum())
-df = df.drop_duplicates()
-print(df.shape)
-</code></pre>
-                    </div>
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Step 4: Convert Data Types (and Optimize Memory)</h4>
-                        <pre><code>df['trans_date_trans_time'] = pd.to_datetime(df['trans_date_trans_time'])
-df['dob'] = pd.to_datetime(df['dob'])
-df['amt'] = pd.to_numeric(df['amt'], downcast='float')
-df['city_pop'] = pd.to_numeric(df['city_pop'], downcast='integer')
-df[['lat', 'long', 'merch_lat', 'merch_long']] = df[['lat', 'long', 'merch_lat', 'merch_long']].apply(pd.to_numeric, downcast='float')
-print(df.dtypes)
-print(df.memory_usage(deep=True).sum() / (1024**2))
-</code></pre>
-                    </div>
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Step 5: Address Outliers</h4>
-                        <pre><code>import seaborn as sns
-import matplotlib.pyplot as plt
-
-sns.boxplot(x=df['amt'].sample(10000))
-plt.show()
-q99_amt = df['amt'].quantile(0.99)
-df['amt'] = np.where(df['amt'] > q99_amt, q99_amt, df['amt'])
-q99_pop = df['city_pop'].quantile(0.99)
-df['city_pop'] = np.where(df['city_pop'] > q99_pop, q99_pop, df['city_pop'])
-print(df['amt'].describe())
-print(df['city_pop'].describe())
-</code></pre>
-                    </div>
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Step 6: Encode Categorical Variables</h4>
-                        <pre><code>df = pd.get_dummies(df, columns=['gender', 'category'], drop_first=True)
-df['merchant_freq'] = df.groupby('merchant')['merchant'].transform('count')
-df['job_freq'] = df.groupby('job')['job'].transform('count')
-df = df.drop(['merchant', 'job'], axis=1)
-print(df.head())
-</code></pre>
-                    </div>
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Step 7: Drop Irrelevant or Redundant Columns</h4>
-                        <pre><code>drop_cols = ['Unnamed: 0', 'trans_num', 'unix_time', 'first', 'last', 'street', 'city', 'state', 'zip', 'cc_num']
-df = df.drop(drop_cols, axis=1)
-print(df.columns)
-</code></pre>
-                    </div>
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Step 8: Initial Feature Engineering for Cleaning</h4>
-                        <pre><code>def haversine(lat1, lon1, lat2, lon2):
-    R = 6371
-    lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
-    dlat = lat2 - lat1
-    dlon = lon2 - lon1
-    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
-    c = 2 * atan2(sqrt(a), sqrt(1-a))
-    return R * c
-
-df['distance_km'] = df.apply(lambda row: haversine(row['lat'], row['long'], row['merch_lat'], row['merch_long']), axis=1)
-df['trans_hour'] = df['trans_date_trans_time'].dt.hour
-df['trans_dayofweek'] = df['trans_date_trans_time'].dt.dayofweek
-df['is_weekend'] = df['trans_dayofweek'].apply(lambda x: 1 if x >= 5 else 0)
-df['age'] = (df['trans_date_trans_time'] - df['dob']).dt.days // 365
-print(df[df['distance_km'] < 0])
-df = df[df['age'] >= 0]
-print(df.head())
-</code></pre>
-                    </div>
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Step 9: Check for Inconsistencies</h4>
-                        <pre><code>df = df[(df['lat'].between(-90, 90)) & (df['long'].between(-180, 180)) &
-        (df['merch_lat'].between(-90, 90)) & (df['merch_long'].between(-90, 180))]
-print(df.corr()['is_fraud'].sort_values(ascending=False))
-</code></pre>
-                    </div>
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Step 10: Save the Cleaned Dataset</h4>
-                        <pre><code>df.to_csv('fraudTrain_cleaned.csv', index=False)
-print("Cleaned dataset saved successfully.")
-</code></pre>
-                    </div>
-                </div>
-                <p class="text-lg text-gray-300 mt-4">
-                    These steps should yield a clean, analysis-ready dataset while preserving key elements for the research question. Note that class imbalance will be addressed during modeling (e.g., via oversampling or class weights) rather than in cleaning to avoid data leakage.
-                </p>
-            </div>
-        </section>
-
-        <!-- Model Selection for Group Members -->
-        <section class="mb-12 fade-in">
-            <h2 class="text-4xl font-bold section-header mb-6">Model Selection for Group Members</h2>
-            <div class="accordion-header">
-                <h3 class="text-xl font-semibold text-white">Selected Models (4 Models)</h3>
-            </div>
-            <div class="accordion-content">
-                <p class="text-lg text-gray-300 mb-6">
-                    Given the binary classification nature of the task (predicting <code>is_fraud</code>) and the top 10 machine learning models from your lectures, four suitable models have been selected for individual implementation by each group member. The choices prioritize models applicable to tabular data, effective for imbalanced classification, and aligned with the research question's predictive focus. Models like Linear Regression (suited for regression), RNN, CNN, and Transformer Networks (oriented toward sequential or image data) were excluded as they are less appropriate here. The selected models are:
-                </p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">Logistic Regression</h3>
-                        <p class="mt-2 text-gray-300">A baseline probabilistic classifier ideal for interpreting feature importance (e.g., geospatial and temporal variables) and handling imbalance through class weights.</p>
-                    </div>
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">Decision Trees</h3>
-                        <p class="mt-2 text-gray-300">A non-parametric model that captures non-linear relationships and interactions, such as between transaction timing and location, with built-in feature selection.</p>
-                    </div>
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">Random Forests</h3>
-                        <p class="mt-2 text-gray-300">An ensemble method that improves on decision trees by reducing overfitting and enhancing accuracy on imbalanced data through bootstrapping and majority voting.</p>
-                    </div>
-                    <div class="model-card p-6 rounded-lg shadow-md">
-                        <h3 class="text-xl font-bold text-blue-400">Support Vector Machine (SVM)</h3>
-                        <p class="mt-2 text-gray-300">Effective for high-dimensional spaces and imbalance via kernel tricks and cost-sensitive learning, focusing on maximizing margins between fraud and non-fraud classes.</p>
-                    </div>
-                </div>
-                <p class="text-lg text-gray-300 mt-6">
-                    Each member can train, tune hyperparameters (e.g., using grid search), and evaluate their model with metrics like precision-recall curves, F1-score, and AUC-ROC to assess predictive extent as per the research question. Compare results collectively to draw insights.
-                </p>
-            </div>
-        </section>
-
-        <!-- Feature Selection -->
-        <section class="mb-12 fade-in">
-            <h2 class="text-4xl font-bold section-header mb-6">Feature Selection for the Chosen Models and Research Question</h2>
-            <div class="accordion-header">
-                <h3 class="text-xl font-semibold text-white">Feature Selection Details</h3>
-            </div>
-            <div class="accordion-content">
-                <p class="text-lg text-gray-300 mb-6">
-                    In alignment with the research question—"To what extent can discrepancies in geospatial proximity between cardholders and merchants, combined with temporal patterns in transaction timing, predict credit card fraud while accounting for demographic and transactional variables?"—feature selection should prioritize columns that directly contribute to geospatial, temporal, demographic, and transactional aspects while ensuring compatibility with the selected models: Logistic Regression, Decision Trees, Random Forests, and Support Vector Machine. These models perform well on tabular data and can handle a mix of numerical and categorical features, provided appropriate preprocessing (e.g., encoding, scaling) is applied.
-                </p>
-                <p class="text-lg text-gray-300 mb-6">
-                    The target variable is <code>is_fraud</code>, a binary flag for classification. Features should be derived from the remaining columns to avoid redundancy, multicollinearity, and privacy concerns (e.g., excluding personally identifiable information). Irrelevant columns, such as unique identifiers (<code>index</code>, <code>trans_num</code>), should be dropped as they offer no predictive value. Similarly, <code>unix_time</code> is redundant with <code>trans_date_trans_time</code> and can be excluded. Sensitive fields like <code>first</code>, <code>last</code>, <code>street</code>, <code>city</code>, <code>state</code>, and <code>zip</code> should be omitted due to privacy risks and overlap with geospatial data (<code>lat</code>, <code>long</code>).
-                </p>
-                <h3 class="text-2xl font-semibold text-blue-400 mb-4">Recommended Features</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Geospatial Proximity Features</h4>
-                        <p class="mt-2 text-gray-300">Retain <code>lat</code>, <code>long</code>, <code>merch_lat</code>, <code>merch_long</code> to compute distance metrics (e.g., Haversine formula for Euclidean distance between cardholder and merchant locations). This derived feature directly quantifies "geospatial proximity" and is crucial for all models, as it may reveal fraud patterns in distant transactions.</p>
-                    </div>
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Temporal Patterns Features</h4>
-                        <p class="mt-2 text-gray-300">Retain <code>trans_date_trans_time</code> to extract derived features like hour of day, day of week, month, or time since previous transaction (if grouped by <code>cc_num</code>). This supports identifying temporal anomalies, enhancing predictive power across models.</p>
-                    </div>
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Demographic Variables</h4>
-                        <ul class="list-disc pl-4 mt-2 text-gray-300">
-                            <li><code>gender</code>: Retain as a categorical feature (binary: M/F) for encoding; provides basic demographic context.</li>
-                            <li><code>city_pop</code>: Retain as numerical; population density could correlate with fraud rates.</li>
-                            <li><code>job</code>: Retain as categorical; encode via frequency or one-hot; occupations may link to spending behaviors.</li>
-                            <li><code>dob</code>: Retain to derive age; a key demographic proxy for risk profiling.</li>
-                        </ul>
-                    </div>
-                    <div class="feature-card p-6 rounded-lg shadow-md">
-                        <h4 class="text-lg font-bold text-blue-400">Transactional Variables</h4>
-                        <ul class="list-disc pl-4 mt-2 text-gray-300">
-                            <li><code>amt</code>: Retain as numerical; unusual amounts are classic fraud indicators, log-transform for normalization.</li>
-                            <li><code>category</code>: Retain as categorical (14 unique); one-hot encode to highlight fraud-prone merchant types.</li>
-                            <li><code>merchant</code>: Retain cautiously; apply frequency encoding due to high cardinality (~700 unique).</li>
-                            <li><code>cc_num</code>: Retain for grouping (e.g., user-level aggregates like transaction count), not as a direct feature.</li>
-                        </ul>
-                    </div>
-                </div>
-                <h3 class="text-2xl font-semibold text-blue-400 mt-6 mb-4">Excluded Columns</h3>
-                <p class="text-lg text-gray-300">
-                    <strong>Excluded:</strong> <code>index</code>, <code>trans_num</code> (identifiers; no value); <code>first</code>, <code>last</code>, <code>street</code> (privacy risk); <code>city</code>, <code>state</code>, <code>zip</code> (redundant with <code>lat</code>/<code>long</code>); <code>unix_time</code> (duplicates <code>trans_date_trans_time</code>).
-                </p>
-                <h3 class="text-2xl font-semibold text-blue-400 mt-6 mb-4">Feature Engineering Recommendations</h3>
-                <p class="text-lg text-gray-300">
-                    To align with the research question, derive: <strong>Geospatial:</strong> Distance (km) = Haversine(<code>lat</code>, <code>long</code>, <code>merch_lat</code>, <code>merch_long</code>). <strong>Temporal:</strong> Hour (0-23), Day of Week (0-6), Is Weekend (binary), Time Delta (hours since last transaction per <code>cc_num</code>). <strong>Demographic:</strong> Age = (transaction date - <code>dob</code>).days / 365. <strong>Transactional:</strong> Log(<code>amt</code>); user-level features like transaction count or average <code>amt</code> per <code>cc_num</code>. <strong>Interactions:</strong> Optionally, distance * <code>amt</code> or hour * category for Decision Trees/Random Forests.
-                </p>
-                <p class="text-lg text-gray-300 mt-4">
-                    This results in ~15-20 features suitable for the models. Scale numerical features for Logistic Regression and SVM; tune hyperparameters for all models. Evaluate feature importance (e.g., coefficients, Gini impurity) to refine selections.
-                </p>
-            </div>
-        </section>
-
-        <!-- Additional Notes -->
-        <section class="mb-12 fade-in">
-            <h2 class="text-4xl font-bold section-header mb-6">Additional Notes</h2>
-            <div class="accordion-header">
-                <h3 class="text-xl font-semibold text-white">Additional Notes</h3>
-            </div>
-            <div class="accordion-content">
-                <p class="text-lg text-gray-300">
-                    If your assessment has specific requirements (e.g., focus on classification, deep learning, or computational complexity), the recommendations can be tailored. For example, you could replace Transformer Networks with <strong>Ridge Regression</strong> (Lectures 3, 7, 8) for regularization-focused discussion or <strong>ARIMA</strong> (Lecture 3) for time series analysis. The full list of 66 models is available for further exploration. Detailed information on specific models (e.g., hyperparameters, applications, or lecture page references) can be provided to support your assessment preparation. For the fraud detection task, additional preprocessing or model tuning strategies can be explored based on specific performance metrics or dataset characteristics.
-                </p>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer-bg text-white py-8 text-center">
-        <p class="text-lg">© 2025 Machine Learning Models & Fraud Detection. All rights reserved.</p>
-    </footer>
 </body>
+
 </html>
+```
