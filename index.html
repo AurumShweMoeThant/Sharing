@@ -1,54 +1,188 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Expense Tracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Expense Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #FDF2F8;
+            border-top: 3px solid #F8C8DC;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .table-row:hover {
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(248, 200, 220, 0.5);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
+        }
+
+        .reminder {
+            background-color: #F8C8DC;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
             text-align: center;
         }
 
-        #total {
-            font-size: 24px;
-            color: #333;
+        .reminder-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        table {
-            margin: 20px auto;
-            border-collapse: collapse;
+        .reminder-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #831843;
+            margin: 0;
         }
 
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
+        .reminder-note {
+            font-size: 0.875rem;
+            color: #831843;
+            margin: 0;
+        }
+
+        .warning {
+            background-color: #FFF5F5;
+            border: 2px solid #DB2777;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .warning-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #DB2777;
+            font-size: 0.875rem;
+        }
+
+        .icon {
+            font-size: 1.25rem;
         }
     </style>
 </head>
 
-<body>
-    <h1>Total Expenses</h1>
-    <div id="total">Loading...</div>
-    <table>
-        <thead>
-            <tr>
-                <th>Restaurant</th>
-                <th>Amount</th>
-            </tr>
-        </thead>
-        <tbody id="expenseList"></tbody>
-    </table>
+<body class="bg-[#FDF2F8] min-h-screen flex items-center justify-center p-4 sm:p-6">
+    <div class="card rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl font-bold text-[#831843] mb-6 text-center">Our Date Expenses</h1>
+        <!-- Reminder Section -->
+        <div class="reminder fade-in">
+            <div class="reminder-content">
+                <i class="fas fa-heart icon text-[#831843]"></i>
+                <p class="reminder-amount">€250</p>
+                <p class="reminder-note">အခန်းခပေးရန် ကျန်။</p>
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-[#F8C8DC]">
+                        <th class="border border-[#F5E1E8] p-3 text-left text-[#831843] font-bold text-sm sm:text-base">
+                            Restaurant</th>
+                        <th class="border border-[#F5E1E8] p-3 text-left text-[#831843] font-bold text-sm sm:text-base">
+                            Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="expenseList" class="text-[#831843] font-light"></tbody>
+            </table>
+        </div>
+        <div id="total" class="text-xl sm:text-2xl text-[#831843] mt-6 text-center font-bold">
+            Loading... <span class="loading-spinner"></span>
+        </div>
+        <div id="lastUpdated" class="text-xs sm:text-sm text-[#831843] mt-2 text-center font-light"></div>
+        <!-- Warning Section -->
+        <div class="warning fade-in">
+            <div class="warning-content">
+                <i class="fas fa-exclamation-circle icon"></i>
+                အကြွေးမဆပ်ပါက လူကိုသိမ်းရမည်။
+            </div>
+        </div>
+    </div>
     <script>
         async function fetchTotal() {
+            const totalElement = document.getElementById('total');
+            const expenseList = document.getElementById('expenseList');
+            const lastUpdated = document.getElementById('lastUpdated');
+
+            totalElement.innerHTML = `Loading... <span class="loading-spinner"></span>`;
+            expenseList.innerHTML = '';
+            lastUpdated.innerHTML = '';
+
             try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbzZls-ShY67S1Ss5qs-CBUWzFKNARX2Uukq0yVYu3LI3OniJW3hzPfoCPjNfDW9NGx5Dg/exec');
+                const response = await fetch('https://script.google.com/macros/s/AKfycbzq-Gl9e0SHFRH2ahJl-4wuk3qbKSDeuFYovfX19RWzeWbZlfNFuRh2jilTFJ6v6-QZnQ/exec');
                 const data = await response.json();
-                document.getElementById('total').innerText = `Total: $${data.total}`;
-                const tbody = document.getElementById('expenseList');
-                tbody.innerHTML = data.expenses.map(e => `<tr><td>${e.restaurant}</td><td>$${e.amount.toFixed(2)}</td></tr>`).join('');
+
+                totalElement.textContent = `Total: €${data.total}`;
+                totalElement.classList.add('fade-in');
+
+                const validExpenses = data.expenses.filter(e => Number.isFinite(Number(e.amount)) && Number(e.amount) > 0);
+                const expenseDate = new Date(data.lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                expenseList.innerHTML = validExpenses.map(e =>
+                    `<tr class="table-row border-b border-[#F5E1E8]"><td class="p-3 text-sm sm:text-base">${e.restaurant || 'N/A'} (${expenseDate})</td><td class="p-3 text-sm sm:text-base">€${Number(e.amount).toFixed(2)}</td></tr>`
+                ).join('');
+                expenseList.classList.add('fade-in');
+
+                const updatedTime = new Date(data.lastUpdated).toLocaleString();
+                lastUpdated.textContent = `Last updated: ${updatedTime}`;
+                lastUpdated.classList.add('fade-in');
             } catch (error) {
-                document.getElementById('total').innerText = 'Error fetching total';
+                totalElement.textContent = 'Error fetching data';
+                expenseList.innerHTML = '<tr><td colspan="2" class="p-3 text-center text-[#DB2777] text-sm sm:text-base">Error loading expenses</td></tr>';
+                lastUpdated.textContent = '';
                 console.error('Error:', error);
             }
         }
