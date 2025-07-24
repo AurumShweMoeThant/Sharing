@@ -110,6 +110,28 @@
             font-size: 0.875rem;
         }
 
+        .total-card {
+            background-color: #F8C8DC;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .total-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #831843;
+            margin: 0;
+        }
+
         .icon {
             font-size: 1.25rem;
         }
@@ -127,6 +149,13 @@
                 <p class="reminder-note">အခန်းခပေးရန် ကျန်။</p>
             </div>
         </div>
+        <!-- Total Section -->
+        <div id="total" class="total-card fade-in">
+            <div class="total-content">
+                <i class="fas fa-euro-sign icon text-[#831843]"></i>
+                <p class="total-amount">Loading... <span class="loading-spinner"></span></p>
+            </div>
+        </div>
         <!-- Expenses Table -->
         <div class="table-container">
             <table class="w-full border-collapse">
@@ -141,13 +170,6 @@
                 <tbody id="expenseList" class="text-[#831843] font-light"></tbody>
             </table>
         </div>
-        <!-- Warning Section -->
-        <div class="warning fade-in">
-            <div class="warning-content">
-                <i class="fas fa-exclamation-circle icon"></i>
-                အကြွေးမဆပ်ပါက လူကိုသိမ်းရမည်။
-            </div>
-        </div>
         <!-- Movies Table -->
         <h2 class="text-xl sm:text-2xl font-bold text-[#831843] mt-8 mb-4 text-center">Movies We Watched Together</h2>
         <div class="table-container">
@@ -161,14 +183,19 @@
                 <tbody id="movieList" class="text-[#831843] font-light"></tbody>
             </table>
         </div>
+        <!-- Last Updated -->
+        <div id="lastUpdated" class="text-xs sm:text-sm text-[#831843] mt-4 text-center font-light"></div>
+        <!-- Warning Section -->
+        <div class="warning fade-in">
+            <div class="warning-content">
+                <i class="fas fa-exclamation-circle icon"></i>
+                အကြွေးမဆပ်ပါက လူကိုသိမ်းရမည်။
+            </div>
+        </div>
     </div>
-    <div id="total" class="text-xl sm:text-2xl text-[#831843] mt-6 text-center font-bold">
-        Loading... <span class="loading-spinner"></span>
-    </div>
-    <div id="lastUpdated" class="text-xs sm:text-sm text-[#831843] mt-2 text-center font-light"></div>
     <script>
         async function fetchData() {
-            const totalElement = document.getElementById('total');
+            const totalElement = document.getElementById('total').querySelector('.total-amount');
             const expenseList = document.getElementById('expenseList');
             const movieList = document.getElementById('movieList');
             const lastUpdated = document.getElementById('lastUpdated');
@@ -182,10 +209,11 @@
                 const response = await fetch('https://script.google.com/macros/s/AKfycbwAYFxTLLq-bDmGXLnU5TS2WVBS8lfIMgCJw5EqjoIaG_VEN2tFWm6S-5mmaumFrr2z/exec');
                 const data = await response.json();
 
-                // Update expenses
+                // Update total
                 totalElement.textContent = `Total: €${data.total}`;
-                totalElement.classList.add('fade-in');
+                totalElement.parentElement.classList.add('fade-in');
 
+                // Update expenses
                 const validExpenses = data.expenses.filter(e => Number.isFinite(Number(e.amount)) && Number(e.amount) > 0);
                 const expenseDate = new Date(data.lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 expenseList.innerHTML = validExpenses.map(e =>
@@ -203,10 +231,10 @@
                 lastUpdated.textContent = `Last updated: ${updatedTime}`;
                 lastUpdated.classList.add('fade-in');
             } catch (error) {
-                totalElement.textContent = 'Error fetching data';
+                totalElement.textContent = 'Error fetching total';
                 expenseList.innerHTML = '<tr><td colspan="2" class="p-3 text-center text-[#DB2777] text-sm sm:text-base">Error loading expenses</td></tr>';
                 movieList.innerHTML = '<tr><td class="p-3 text-center text-[#DB2777] text-sm sm:text-base">Error loading movies</td></tr>';
-                lastUpdated.textContent = '';
+                lastUpdated.textContent = 'Error fetching last updated time';
                 console.error('Error:', error);
             }
         }
