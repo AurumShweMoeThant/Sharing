@@ -141,10 +141,6 @@
                 <tbody id="expenseList" class="text-[#831843] font-light"></tbody>
             </table>
         </div>
-        <div id="total" class="text-xl sm:text-2xl text-[#831843] mt-6 text-center font-bold">
-            Loading... <span class="loading-spinner"></span>
-        </div>
-        <div id="lastUpdated" class="text-xs sm:text-sm text-[#831843] mt-2 text-center font-light"></div>
         <!-- Warning Section -->
         <div class="warning fade-in">
             <div class="warning-content">
@@ -165,10 +161,11 @@
                 <tbody id="movieList" class="text-[#831843] font-light"></tbody>
             </table>
         </div>
-        <div id="total" class="text-xl sm:text-2xl text-[#831843] mt-6 text-center font-bold">
-            Loading... <span class="loading-spinner"></span>
-        </div>
     </div>
+    <div id="total" class="text-xl sm:text-2xl text-[#831843] mt-6 text-center font-bold">
+        Loading... <span class="loading-spinner"></span>
+    </div>
+    <div id="lastUpdated" class="text-xs sm:text-sm text-[#831843] mt-2 text-center font-light"></div>
     <script>
         async function fetchData() {
             const totalElement = document.getElementById('total');
