@@ -4,44 +4,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Expense Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+    <title>Our Love Ledger</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
+            background: linear-gradient(180deg, #FFF0F5 0%, #FFE4E1 100%);
         }
 
-        .loading-spinner {
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            border: 3px solid #FDF2F8;
-            border-top: 3px solid #F8C8DC;
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 240, 245, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            color: #9B2C5A;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .loading-heart {
+            width: 40px;
+            height: 40px;
+            background: #F8C8DC;
+            position: relative;
+            transform: rotate(45deg);
+            animation: pulse 1.2s ease-in-out infinite;
+        }
+
+        .loading-heart::before,
+        .loading-heart::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            background: #F8C8DC;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-left: 8px;
+            position: absolute;
         }
 
-        @keyframes spin {
+        .loading-heart::before {
+            top: -20px;
+            left: 0;
+        }
+
+        .loading-heart::after {
+            left: -20px;
+            top: 0;
+        }
+
+        @keyframes pulse {
             0% {
-                transform: rotate(0deg);
+                transform: rotate(45deg) scale(1);
+            }
+
+            50% {
+                transform: rotate(45deg) scale(1.2);
             }
 
             100% {
-                transform: rotate(360deg);
+                transform: rotate(45deg) scale(1);
             }
         }
 
         .fade-in {
-            animation: fadeIn 0.5s ease-in;
+            animation: fadeIn 0.6s ease-in;
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(15px);
             }
 
             to {
@@ -50,164 +96,166 @@
             }
         }
 
+        .section-card {
+            background: #FFF0F5;
+            border: 2px solid transparent;
+            border-image: linear-gradient(45deg, #F8C8DC, #FFCCD5) 1;
+            border-radius: 12px;
+            padding: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(155, 44, 90, 0.2);
+        }
+
         .table-row:hover {
-            transform: scale(1.02);
-            box-shadow: 0 2px 8px rgba(248, 200, 220, 0.5);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background: #FFE4E1;
+            transition: background 0.2s ease;
         }
 
         .table-container {
             overflow-x: auto;
         }
 
-        .card {
-            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
-        }
-
-        .reminder {
-            background-color: #F8C8DC;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-
-        .reminder-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .reminder-amount {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #831843;
-            margin: 0;
-        }
-
-        .reminder-note {
-            font-size: 0.875rem;
-            color: #831843;
-            margin: 0;
-        }
-
-        .warning {
-            background-color: #FFF5F5;
-            border: 2px solid #DB2777;
-            border-radius: 8px;
-            padding: 12px;
+        .last-updated {
+            border-top: 1px dashed #F8C8DC;
+            padding-top: 12px;
             margin-top: 16px;
             text-align: center;
         }
 
-        .warning-content {
+        .last-updated-content {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            color: #DB2777;
+            color: #9B2C5A;
             font-size: 0.875rem;
-        }
-
-        .total-card {
-            background-color: #F8C8DC;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-
-        .total-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .total-amount {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #831843;
-            margin: 0;
+            font-weight: 300;
         }
 
         .icon {
             font-size: 1.25rem;
+            color: #9B2C5A;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 640px) {
+            .grid-container {
+                grid-template-columns: 1fr 1fr;
+            }
         }
     </style>
 </head>
 
-<body class="bg-[#FDF2F8] min-h-screen flex items-center justify-center p-4 sm:p-6">
-    <div class="card rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-3xl">
-        <h1 class="text-2xl sm:text-3xl font-bold text-[#831843] mb-6 text-center">Our Date Expenses</h1>
-        <!-- Reminder Section -->
-        <div class="reminder fade-in">
-            <div class="reminder-content">
-                <i class="fas fa-heart icon text-[#831843]"></i>
-                <p class="reminder-amount">€250</p>
-                <p class="reminder-note">အခန်းခပေးရန် ကျန်။</p>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6">
+    <div class="card rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-4xl bg-white">
+        <h1 class="text-2xl sm:text-3xl font-bold text-[#9B2C5A] mb-6 text-center">Our Love Ledger</h1>
+        <!-- Loading Overlay -->
+        <div id="loading" class="loading-overlay">
+            <div class="loading-content">
+                <div class="loading-heart"></div>
+                <p>Gathering our shared moments...</p>
             </div>
         </div>
-        <!-- Total Section -->
-        <div id="total" class="total-card fade-in">
-            <div class="total-content">
-                <i class="fas fa-euro-sign icon text-[#831843]"></i>
-                <p class="total-amount">Loading... <span class="loading-spinner"></span></p>
+        <!-- Content Container -->
+        <div id="content" style="display: none;">
+            <!-- Reminder Section -->
+            <div class="section-card fade-in">
+                <div class="flex items-center justify-center gap-8">
+                    <div>
+                        <p class="text-2xl font-bold text-[#9B2C5A]">€250</p>
+                        <p class="text-sm text-[#9B2C5A]">အခန်းခပေးရန် ကျန်။</p>
+                    </div>
+                </div>
             </div>
-        </div>
-        <!-- Expenses Table -->
-        <div class="table-container">
-            <table class="w-full border-collapse">
-                <thead>
-                    <tr class="bg-[#F8C8DC]">
-                        <th class="border border-[#F5E1E8] p-3 text-left text-[#831843] font-bold text-sm sm:text-base">
-                            Restaurant</th>
-                        <th class="border border-[#F5E1E8] p-3 text-left text-[#831843] font-bold text-sm sm:text-base">
-                            Amount</th>
-                    </tr>
-                </thead>
-                <tbody id="expenseList" class="text-[#831843] font-light"></tbody>
-            </table>
-        </div>
-        <!-- Movies Table -->
-        <h2 class="text-xl sm:text-2xl font-bold text-[#831843] mt-8 mb-4 text-center">Movies We Watched Together</h2>
-        <div class="table-container">
-            <table class="w-full border-collapse">
-                <thead>
-                    <tr class="bg-[#F8C8DC]">
-                        <th class="border border-[#F5E1E8] p-3 text-left text-[#831843] font-bold text-sm sm:text-base">
-                            Movie</th>
-                    </tr>
-                </thead>
-                <tbody id="movieList" class="text-[#831843] font-light"></tbody>
-            </table>
-        </div>
-        <!-- Last Updated -->
-        <div id="lastUpdated" class="text-xs sm:text-sm text-[#831843] mt-4 text-center font-light"></div>
-        <!-- Warning Section -->
-        <div class="warning fade-in">
-            <div class="warning-content">
-                <i class="fas fa-exclamation-circle icon"></i>
-                အကြွေးမဆပ်ပါက လူကိုသိမ်းရမည်။
+            <!-- Total Section -->
+            <div id="total" class="section-card fade-in">
+                <div class="flex items-center justify-center gap-8">
+                    <p class="text-2xl font-bold text-[#9B2C5A]"></p>
+                </div>
+            </div>
+            <!-- Grid for Expenses and Movies -->
+            <div class="grid-container">
+                <!-- Expenses Table -->
+                <div id="expenses" class="section-card fade-in">
+                    <h2 class="text-lg sm:text-xl font-bold text-[#9B2C5A] mb-4 text-center">Our Dining Adventures</h2>
+                    <div class="table-container">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-[#FFE4E1]">
+                                    <th class="border border-[#F8C8DC] p-3 text-left text-[#9B2C5A] font-bold text-sm">
+                                        Restaurant</th>
+                                    <th class="border border-[#F8C8DC] p-3 text-left text-[#9B2C5A] font-bold text-sm">
+                                        Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expenseList" class="text-[#9B2C5A] font-light"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Movies Table -->
+                <div id="movies" class="section-card fade-in">
+                    <h2 class="text-lg sm:text-xl font-bold text-[#9B2C5A] mb-4 text-center">Movies We Watched Together
+                    </h2>
+                    <div class="table-container">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-[#FFE4E1]">
+                                    <th class="border border-[#F8C8DC] p-3 text-left text-[#9B2C5A] font-bold text-sm">
+                                        Movie</th>
+                                </tr>
+                            </thead>
+                            <tbody id="movieList" class="text-[#9B2C5A] font-light"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Last Updated -->
+            <div id="lastUpdated" class="last-updated fade-in">
+                <div class="last-updated-content">
+                    <i class="fas fa-heart icon"></i>
+                    <p class="last-updated-text"></p>
+                </div>
+            </div>
+            <!-- Warning Section -->
+            <div class="section-card fade-in">
+                <div class="flex items-center justify-center gap-8 text-[#DB2777]">
+                    <i class="fas fa-exclamation-circle icon"></i>
+                    <p class="text-sm">အကြွေးမဆပ်ပါက လူကိုသိမ်းရမည်။</p>
+                </div>
             </div>
         </div>
     </div>
     <script>
         async function fetchData() {
-            const totalElement = document.getElementById('total').querySelector('.total-amount');
+            const loadingElement = document.getElementById('loading');
+            const contentElement = document.getElementById('content');
+            const totalElement = document.getElementById('total').querySelector('p');
+            const expensesContainer = document.getElementById('expenses');
             const expenseList = document.getElementById('expenseList');
+            const moviesContainer = document.getElementById('movies');
             const movieList = document.getElementById('movieList');
-            const lastUpdated = document.getElementById('lastUpdated');
+            const lastUpdatedElement = document.getElementById('lastUpdated').querySelector('.last-updated-text');
 
-            totalElement.innerHTML = `Loading... <span class="loading-spinner"></span>`;
-            expenseList.innerHTML = '';
-            movieList.innerHTML = '';
-            lastUpdated.innerHTML = '';
+            // Show loading, hide content
+            loadingElement.style.display = 'flex';
+            contentElement.style.display = 'none';
 
             try {
                 const response = await fetch('https://script.google.com/macros/s/AKfycbwAYFxTLLq-bDmGXLnU5TS2WVBS8lfIMgCJw5EqjoIaG_VEN2tFWm6S-5mmaumFrr2z/exec');
                 const data = await response.json();
+
+                // Hide loading, show content
+                loadingElement.style.display = 'none';
+                contentElement.style.display = 'block';
 
                 // Update total
                 totalElement.textContent = `Total: €${data.total}`;
@@ -217,24 +265,36 @@
                 const validExpenses = data.expenses.filter(e => Number.isFinite(Number(e.amount)) && Number(e.amount) > 0);
                 const expenseDate = new Date(data.lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 expenseList.innerHTML = validExpenses.map(e =>
-                    `<tr class="table-row border-b border-[#F5E1E8]"><td class="p-3 text-sm sm:text-base">${e.restaurant || 'N/A'} (${expenseDate})</td><td class="p-3 text-sm sm:text-base">€${Number(e.amount).toFixed(2)}</td></tr>`
+                    `<tr class="table-row border-b border-[#F8C8DC]"><td class="p-3 text-sm">${e.restaurant || 'N/A'} (${expenseDate})</td><td class="p-3 text-sm">€${Number(e.amount).toFixed(2)}</td></tr>`
                 ).join('');
-                expenseList.classList.add('fade-in');
+                expensesContainer.classList.add('fade-in');
 
                 // Update movies
                 movieList.innerHTML = data.movies.map(movie =>
-                    `<tr class="table-row border-b border-[#F5E1E8]"><td class="p-3 text-sm sm:text-base">${movie}</td></tr>`
+                    `<tr class="table-row border-b border-[#F8C8DC]"><td class="p-3 text-sm">${movie}</td></tr>`
                 ).join('');
-                movieList.classList.add('fade-in');
+                moviesContainer.classList.add('fade-in');
 
-                const updatedTime = new Date(data.lastUpdated).toLocaleString();
-                lastUpdated.textContent = `Last updated: ${updatedTime}`;
-                lastUpdated.classList.add('fade-in');
+                // Update last updated
+                const updatedTime = new Date(data.lastUpdated).toLocaleString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+                lastUpdatedElement.textContent = `Our memories refreshed on ${updatedTime}`;
+                lastUpdatedElement.parentElement.classList.add('fade-in');
             } catch (error) {
+                // Hide loading, show content with error messages
+                loadingElement.style.display = 'none';
+                contentElement.style.display = 'block';
+
                 totalElement.textContent = 'Error fetching total';
-                expenseList.innerHTML = '<tr><td colspan="2" class="p-3 text-center text-[#DB2777] text-sm sm:text-base">Error loading expenses</td></tr>';
-                movieList.innerHTML = '<tr><td class="p-3 text-center text-[#DB2777] text-sm sm:text-base">Error loading movies</td></tr>';
-                lastUpdated.textContent = 'Error fetching last updated time';
+                expenseList.innerHTML = '<tr><td colspan="2" class="p-3 text-center text-[#DB2777] text-sm">Error loading expenses</td></tr>';
+                movieList.innerHTML = '<tr><td class="p-3 text-center text-[#DB2777] text-sm">Error loading movies</td></tr>';
+                lastUpdatedElement.textContent = 'Error fetching last updated time';
                 console.error('Error:', error);
             }
         }
