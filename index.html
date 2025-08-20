@@ -1,293 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Series Night Invitation</title>
+    <title>Fake News Website</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Custom CSS -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
         body {
-            background: linear-gradient(45deg, #ff99cc, #ff66b2);
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
         }
 
-        .container {
+        .navbar {
+            background-color: #2c3e50;
+        }
+
+        .navbar-brand,
+        .nav-link {
+            color: #ecf0f1 !important;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://via.placeholder.com/1920x600');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
             text-align: center;
-            padding: 25px;
-            max-width: 600px;
-            width: 90%;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: slideIn 0.8s ease-out;
         }
 
-        h1 {
-            font-size: 2.2em;
-            color: #ffe6f0;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-            text-shadow: 0 0 8px rgba(255, 77, 148, 0.5);
+        .news-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 30px;
         }
 
-        p {
-            font-size: 1.1em;
-            margin-bottom: 25px;
-            line-height: 1.6;
-            color: #f5f5f5;
+        .news-card:hover {
+            transform: translateY(-5px);
         }
 
-        .icon {
-            width: 70px;
-            height: 70px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff4d94"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') no-repeat center;
-            background-size: contain;
-            margin: 0 auto 20px;
-            animation: pulse 1.8s infinite alternate;
+        .news-card img {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            height: 200px;
+            object-fit: cover;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: linear-gradient(90deg, #ff4d94, #ff80b3);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 50px;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(255, 77, 148, 0.4);
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 77, 148, 0.6);
-            background: linear-gradient(90deg, #ff80b3, #ff4d94);
-        }
-
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.95);
+        .news-card .card-body {
             padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-            text-align: center;
-            max-width: 85%;
-            z-index: 1000;
-            animation: zoomIn 0.4s ease-out;
         }
 
-        .popup-content {
-            color: #ff4d94;
-            font-size: 1.1em;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-
-        .popup-link {
-            display: inline-block;
-            padding: 10px 25px;
-            background: #ff4d94;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 50px;
-            font-size: 1em;
-            font-weight: 600;
-            margin: 10px 0;
-            transition: all 0.3s ease;
-        }
-
-        .popup-link:hover {
-            background: #e60073;
-            box-shadow: 0 5px 15px rgba(230, 0, 115, 0.4);
-        }
-
-        .popup-close {
-            background: #ff4d94;
-            color: #fff;
+        .read-more-btn {
+            background-color: #e74c3c;
+            color: white;
             border: none;
-            padding: 10px 25px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
         }
 
-        .popup-close:hover {
-            background: #e60073;
-            box-shadow: 0 5px 15px rgba(230, 0, 115, 0.4);
+        .read-more-btn:hover {
+            background-color: #c0392b;
+            color: white;
+            text-decoration: none;
         }
 
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 999;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            from { transform: scale(1); filter: drop-shadow(0 0 5px rgba(255, 77, 148, 0.3)); }
-            to { transform: scale(1.1); filter: drop-shadow(0 0 10px rgba(255, 77, 148, 0.7)); }
-        }
-
-        @keyframes zoomIn {
-            from { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
-            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        }
-
-        .confetti {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            background: #ff80b3;
-            opacity: 0.9;
-            animation: drift 4s linear infinite;
-            border-radius: 50%;
-        }
-
-        @keyframes drift {
-            0% { transform: translateY(-100vh) rotate(0deg); opacity: 0.9; }
-            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 480px) {
-            .container {
-                padding: 20px;
-                width: 95%;
-            }
-
-            h1 {
-                font-size: 1.8em;
-                margin-bottom: 15px;
-            }
-
-            p {
-                font-size: 0.95em;
-                margin-bottom: 20px;
-            }
-
-            .btn {
-                padding: 10px 20px;
-                font-size: 0.95em;
-            }
-
-            .icon {
-                width: 60px;
-                height: 60px;
-            }
-
-            .popup {
-                padding: 15px;
-                max-width: 90%;
-            }
-
-            .popup-content {
-                font-size: 0.95em;
-                margin-bottom: 15px;
-            }
-
-            .popup-link {
-                font-size: 0.9em;
-                padding: 8px 20px;
-            }
-
-            .popup-close {
-                font-size: 0.9em;
-                padding: 8px 20px;
-            }
-
-            .confetti {
-                width: 6px;
-                height: 6px;
-            }
-        }
-
-        @media (max-width: 360px) {
-            h1 {
-                font-size: 1.5em;
-            }
-
-            p {
-                font-size: 0.9em;
-            }
-
-            .btn {
-                padding: 8px 15px;
-                font-size: 0.9em;
-            }
-
-            .icon {
-                width: 50px;
-                height: 50px;
-            }
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="icon"></div>
-        <h1>Join Me for a Movie Night!</h1>
-        <p><br> ညဆယ့်တစ်ကျ ကြည့်ပါ့မယ်ဗျာ။ အဆင်သင့်ပြင်ထားပါ။ 💕</p>
-        <a class="btn" onclick="showPopup()">ကြည့်မယ်။</a>
-    </div>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">Fake News</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <div class="overlay" id="overlay"></div>
-    <div class="popup" id="popup">
-        <div class="popup-content">Yayyy!! Our first Movie Date on Discord!</div>
-        <a href="https://discord.gg/wbkuZUq4" class="popup-link" target="_blank">Join Me on Discord</a>
-        <button class="popup-close" onclick="hidePopup()">Close</button>
-    </div>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1>Welcome to Fake News</h1>
+            <p>Your source for the latest fabricated stories and creative headlines!</p>
+        </div>
+    </section>
 
-    <script>
-        function createConfetti() {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            confetti.style.left = Math.random() * 100 + 'vw';
-            confetti.style.background = ['#ff4d94', '#ff80b3', '#ffe6f0'][Math.floor(Math.random() * 3)];
-            confetti.style.animationDuration = Math.random() * 2 + 3 + 's';
-            document.body.appendChild(confetti);
-            setTimeout(() => confetti.remove(), 4000);
-        }
+    <!-- News Section -->
+    <section class="container my-5">
+        <h2 class="text-center mb-4">Latest News</h2>
+        <div class="row">
+            <!-- News Card 1 -->
+            <div class="col-md-4">
+                <div class="news-card">
+                    <img src="https://via.placeholder.com/400x200" alt="News Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Aliens Land in Central Park!</h5>
+                        <p class="card-text">In a shocking turn of events, extraterrestrial visitors have reportedly
+                            landed in New York City's Central Park, sparking widespread curiosity and excitement.</p>
+                        <a href="https://discord.com/channels/1399118375644303571/1399118376126906430
+" class="read-more-btn">Read More</a>
+                    </div>
+                </div>
+            </div>
+            <!-- News Card 2 -->
+            <div class="col-md-4">
+                <div class="news-card">
+                    <img src="https://via.placeholder.com/400x200" alt="News Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Time Travel Discovered in 2025</h5>
+                        <p class="card-text">Scientists claim to have unlocked the secret to time travel, allowing
+                            people to visit the past or future. Is this the dawn of a new era?</p>
+                        <a href="https://discord.com/channels/1399118375644303571/1399118376126906430
+" class="read-more-btn">Read More</a>
+                    </div>
+                </div>
+            </div>
+            <!-- News Card 3 -->
+            <div class="col-md-4">
+                <div class="news-card">
+                    <img src="https://via.placeholder.com/400x200" alt="News Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Unicorns Spotted in Scotland</h5>
+                        <p class="card-text">Mythical creatures have reportedly been sighted roaming the Scottish
+                            Highlands, prompting debates about their existence.</p>
+                        <a href="https://discord.com/channels/1399118375644303571/1399118376126906430
+" class="read-more-btn">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        setInterval(createConfetti, 400);
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Fake News. All rights reserved.</p>
+        </div>
+    </footer>
 
-        function showPopup() {
-            document.getElementById('popup').style.display = 'block';
-            document.getElementById('overlay').style.display = 'block';
-        }
-
-        function hidePopup() {
-            document.getElementById('popup').style.display = 'none';
-            document.getElementById('overlay').style.display = 'none';
-        }
-    </script>
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>
